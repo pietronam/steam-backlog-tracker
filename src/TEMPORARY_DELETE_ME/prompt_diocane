@@ -1,0 +1,12 @@
+I need to handle storage via localStorage in my application. For this, I will use the SteamDataState interface as a base, and use a Provider and Reducer to handle context in the entire application. Implement the following in the context folder.
+
+A useReducer hook which handles the following state transitions:
+- SET_STEAM_ID
+- ADD_CUSTOM_TAG
+- REMOVE_CUSTOM_TAG
+- ADD_CUSTOM_DESCRIPTION
+- REMOVE_CUSTOM_DESCRIPTION
+- CHANGE_GAME_STATUS
+- CLEAR_DATA
+
+A SteamDataProvider which handles the context, and loads/saves the state to localStorage using the reducer. It will need to expose the Reducer's methods (in the form of custom functions, like setSteamId) via the useSteamData hook to the rest of the application.
