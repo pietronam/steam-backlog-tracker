@@ -1,19 +1,17 @@
 export type GameType = {
     appid: number,
     name: string,
-    img_icon_url: string,
     status: "finished" | "backlog" | "untracked",
     custom_tags: string[],
     game_info: {
         genres: {
-            id: number,
+            id: string,
             description: string,
-        },
-        detailed_description: string,
+        }[],
         short_description: string,
         developers: string[],
         publishers: string[],
-        metacritic: {
+        metacritic?: {
             score: number,
             url: string,
         },
