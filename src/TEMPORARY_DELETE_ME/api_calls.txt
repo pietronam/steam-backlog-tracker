@@ -1,2 +1,3 @@
 API per dettagli: https://store.steampowered.com/api/appdetails?appids=440
 API per i giochi di un utente steam: https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=1C9C70A0772D3741F66AA91BA733CE7E&steamid=76561198094704548&format=json&include_appinfo=true&include_played_free_games=true
+Immagini verticali (importante error handling): https://shared.steamstatic.com/store_item_assets/steam/apps/2357570/library_600x900.jpg
