@@ -6,9 +6,10 @@ const getCoverImageUrl = (appid: number) =>
 
 export type GameCardProps = {
     game: GameType
+    onOpen?: (game: GameType) => void
 }
 
-export const GameCard = ({ game }: GameCardProps) => {
+export const GameCard = ({ game, onOpen }: GameCardProps) => {
     const coverImageUrl = getCoverImageUrl(game.appid)
 
     return (
@@ -17,6 +18,18 @@ export const GameCard = ({ game }: GameCardProps) => {
             overflow="hidden"
             bg="white"
             shadow="md"
+            borderRadius="lg"
+            cursor={onOpen ? "pointer" : "default"}
+            onClick={() => onOpen?.(game)}
+            role={onOpen ? "button" : undefined}
+            tabIndex={onOpen ? 0 : undefined}
+            onKeyDown={(event) => {
+                if (!onOpen) return
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault()
+                    onOpen(game)
+                }
+            }}
         >
             <Image
                 src={coverImageUrl}
