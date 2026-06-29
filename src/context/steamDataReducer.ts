@@ -1,8 +1,9 @@
-import type { SteamDataState } from "../types/SteamDataState";
-import type { GameType } from "../types/GameType";
+import type { SteamDataState } from "../types/steamDataState";
+import type { GameType } from "../types/gameType";
+import type { userType } from "../types/userType";
 
 export type SteamDataAction =
-  | { type: "SET_STEAM_ID"; payload: number }
+  | { type: "SET_STEAM_USER"; payload: userType }
   | { type: "ADD_CUSTOM_TAG"; payload: { appid: number; tag: string } }
   | { type: "REMOVE_CUSTOM_TAG"; payload: { appid: number; tag: string } }
   | {
@@ -16,8 +17,18 @@ export type SteamDataAction =
     }
   | { type: "CLEAR_DATA" };
 
-export const initialSteamDataState: SteamDataState = {
+const emptyUser: userType = {
   steamid: 0,
+  username: "",
+  profileurl: "",
+  avatar: "",
+  avatarmedium: "",
+  avatarfull: "",
+  personastate: 0,
+};
+
+export const initialSteamDataState: SteamDataState = {
+  user: emptyUser,
   games: [],
 };
 
@@ -26,8 +37,8 @@ export function steamDataReducer(
   action: SteamDataAction,
 ): SteamDataState {
   switch (action.type) {
-    case "SET_STEAM_ID":
-      return { ...state, steamid: action.payload };
+    case "SET_STEAM_USER":
+      return { ...state, user: action.payload };
 
     case "ADD_CUSTOM_TAG": {
       const { appid, tag } = action.payload;

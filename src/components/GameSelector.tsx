@@ -1,7 +1,7 @@
 import { Box, Flex, HStack, Text } from "@chakra-ui/react"
 import { useState } from "react"
 import { useSteamData } from "../context/SteamDataContext"
-import type { GameType } from "../types/GameType"
+import type { GameType } from "../types/gameType"
 import { CardHolder } from "./CardHolder"
 
 type LibraryTab = "backlog" | "completed" | "library"

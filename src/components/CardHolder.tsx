@@ -20,7 +20,7 @@ import {
     DialogPositioner,
 } from "@chakra-ui/react"
 import { GameCard } from "./GameCard"
-import type { GameType } from "../types/GameType"
+import type { GameType } from "../types/gameType"
 import type { DialogOpenChangeDetails } from "@chakra-ui/react"
 
 export type CardHolderProps = {

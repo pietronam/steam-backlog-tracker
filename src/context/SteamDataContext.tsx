@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useReducer } from "react";
-import type { SteamDataState } from "../types/SteamDataState";
+import type { SteamDataState } from "../types/steamDataState";
+import type { userType } from "../types/userType";
 import {
   initialSteamDataState,
   steamDataReducer
@@ -10,7 +11,7 @@ const STORAGE_KEY = "steamDataState";
 
 type SteamDataContextValue = {
   state: SteamDataState;
-  setSteamId: (id: number) => void;
+  setSteamUser: (user: userType) => void;
   addCustomTag: (appid: number, tag: string) => void;
   removeCustomTag: (appid: number, tag: string) => void;
   addCustomDescription: (appid: number, description: string) => void;
@@ -30,10 +31,13 @@ function loadFromStorage(): SteamDataState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY); // "raw" output is only a string in JSON format
     if (!raw) return initialSteamDataState;
-    const parsed = JSON.parse(raw) as SteamDataState;
-    if (typeof parsed?.steamid !== "number" || !Array.isArray(parsed?.games))
+    const parsed = JSON.parse(raw) as Partial<SteamDataState>;
+    if (typeof parsed?.user?.steamid !== "number" || !Array.isArray(parsed?.games))
       return initialSteamDataState; // validate the shape of the parsed object
-    return parsed;
+    return {
+      user: { ...initialSteamDataState.user, ...parsed.user },
+      games: parsed.games,
+    };
   } catch (e) {
     return initialSteamDataState;
   }
@@ -60,7 +64,7 @@ export function SteamDataProvider({ children }: { children: ReactNode }) {
 
   const contextValue: SteamDataContextValue = {
     state,
-    setSteamId: (id: number) => dispatch({ type: "SET_STEAM_ID", payload: id }),
+    setSteamUser: (user: userType) => dispatch({ type: "SET_STEAM_USER", payload: user }),
     addCustomTag: (appid: number, tag: string) =>
       dispatch({ type: "ADD_CUSTOM_TAG", payload: { appid, tag } }),
     removeCustomTag: (appid: number, tag: string) =>

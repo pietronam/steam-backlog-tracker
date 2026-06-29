@@ -1,5 +1,5 @@
 import { Box, Image } from "@chakra-ui/react"
-import type { GameType } from "../types/GameType"
+import type { GameType } from "../types/gameType"
 
 const getCoverImageUrl = (appid: number) =>
     `https://shared.steamstatic.com/store_item_assets/steam/apps/${appid}/library_600x900.jpg`

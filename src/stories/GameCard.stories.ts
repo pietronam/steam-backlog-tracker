@@ -3,7 +3,7 @@ import { ChakraProvider, defaultSystem } from "@chakra-ui/react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { GameCard, type GameCardProps } from "../components/GameCard"
-import type { GameType } from "../types/GameType"
+import type { GameType } from "../types/gameType"
 
 const renderWithChakra = (args: GameCardProps) =>
   createElement(

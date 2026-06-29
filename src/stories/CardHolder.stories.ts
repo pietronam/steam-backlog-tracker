@@ -2,7 +2,7 @@ import { createElement, type ReactElement } from "react"
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react"
 
 import { CardHolder } from "../components/CardHolder"
-import type { GameType } from "../types/GameType"
+import type { GameType } from "../types/gameType"
 
 type CardHolderStoryArgs = {
   games: GameType[]

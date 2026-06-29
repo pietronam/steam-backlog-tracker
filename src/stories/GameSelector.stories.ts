@@ -3,7 +3,7 @@ import { ChakraProvider, defaultSystem } from "@chakra-ui/react"
 
 import { GameSelector } from "../components/GameSelector"
 import SteamDataProvider from "../context/SteamDataContext"
-import type { GameType } from "../types/GameType"
+import type { GameType } from "../types/gameType"
 
 const sampleGames: GameType[] = [
   {
@@ -60,7 +60,18 @@ const renderWithProviders = (): ReactElement => {
   if (typeof window !== "undefined") {
     window.localStorage.setItem(
       "steamDataState",
-      JSON.stringify({ steamid: 123456789, games: sampleGames }),
+      JSON.stringify({
+        user: {
+          steamid: 123456789,
+          username: "",
+          profileurl: "",
+          avatar: "",
+          avatarmedium: "",
+          avatarfull: "",
+          personastate: 0,
+        },
+        games: sampleGames,
+      }),
     )
   }
 
