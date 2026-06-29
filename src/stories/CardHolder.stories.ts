@@ -53,7 +53,7 @@ const sampleGames: GameType[] = [
   {
     appid: 730,
     name: "Counter-Strike: Global Offensive",
-    status: "finished",
+    status: "completed",
     custom_tags: ["shooter", "competitive"],
     custom_description: "A high-skill tactical shooter with a huge esports scene.",
     game_info: {
@@ -69,7 +69,7 @@ const sampleGames: GameType[] = [
   {
     appid: 620,
     name: "Portal 2",
-    status: "finished",
+    status: "completed",
     custom_tags: ["puzzle", "singleplayer"],
     custom_description: "A brilliant physics-puzzle game with a strong narrative.",
     game_info: {

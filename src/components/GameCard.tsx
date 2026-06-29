@@ -16,7 +16,8 @@ export const GameCard = ({ game, onOpen }: GameCardProps) => {
         <Box
             as="article"
             overflow="hidden"
-            bg="white"
+            width="200px"
+            height="300px"
             shadow="md"
             borderRadius="lg"
             cursor={onOpen ? "pointer" : "default"}
@@ -34,8 +35,6 @@ export const GameCard = ({ game, onOpen }: GameCardProps) => {
             <Image
                 src={coverImageUrl}
                 alt={`${game.name} cover`}
-                width="200px"
-                height="300px"
                 loading="lazy"
                 objectFit="cover"
                 bg="gray.100"

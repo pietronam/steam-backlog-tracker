@@ -17,7 +17,7 @@ type SteamDataContextValue = {
   removeCustomDescription: (appid: number) => void;
   changeGameStatus: (
     appid: number,
-    status: "finished" | "backlog" | "untracked",
+    status: "completed" | "backlog" | "untracked",
   ) => void;
   clearData: () => void;
 };
@@ -74,7 +74,7 @@ export function SteamDataProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "REMOVE_CUSTOM_DESCRIPTION", payload: { appid } }),
     changeGameStatus: (
       appid: number,
-      status: "finished" | "backlog" | "untracked",
+      status: "completed" | "backlog" | "untracked",
     ) => dispatch({ type: "CHANGE_GAME_STATUS", payload: { appid, status } }),
     clearData: () => dispatch({ type: "CLEAR_DATA" })
   };
