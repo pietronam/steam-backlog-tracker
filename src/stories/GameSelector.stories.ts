@@ -1,7 +1,7 @@
 import { createElement, type ReactElement } from "react"
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react"
 
-import { LibrarySelector } from "../components/LibrarySelector"
+import { GameSelector } from "../components/GameSelector"
 import SteamDataProvider from "../context/SteamDataContext"
 import type { GameType } from "../types/GameType"
 
@@ -71,15 +71,15 @@ const renderWithProviders = (): ReactElement => {
       children: createElement(
         SteamDataProvider,
         null,
-        createElement(LibrarySelector),
+        createElement(GameSelector),
       ),
     },
   )
 }
 
 const meta = {
-  title: "Components/LibrarySelector",
-  component: LibrarySelector,
+  title: "Components/GameSelector",
+  component: GameSelector,
   parameters: {
     layout: "fullscreen",
   },

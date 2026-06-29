@@ -4,21 +4,21 @@ import { useSteamData } from "../context/SteamDataContext"
 import type { GameType } from "../types/GameType"
 import { CardHolder } from "./CardHolder"
 
-type LibraryTab = GameType["status"]
+type LibraryTab = "backlog" | "completed" | "library"
 
 const tabs: Array<{ value: LibraryTab; label: string }> = [
     { value: "backlog", label: "Backlog" },
     { value: "completed", label: "Completed" },
-    { value: "untracked", label: "Library" },
+    { value: "library", label: "Library" },
 ]
 
 const matchesTab = (game: GameType, activeTab: LibraryTab) => {
-    if (activeTab === "backlog") return game.status === "backlog"
-    if (activeTab === "completed") return game.status === "completed"
-    return true
+    if (activeTab === "library") return true;
+
+    return activeTab.toLowerCase() === game.status;
 }
 
-export const LibrarySelector = () => {
+export const GameSelector = () => {
     const { state } = useSteamData()
     const [activeTab, setActiveTab] = useState<LibraryTab>("backlog")
 
@@ -34,7 +34,7 @@ export const LibrarySelector = () => {
                         return (
                             <Flex
                                 key={tab.value}
-                                colorScheme={isActive ? "blue" : "gray"}
+                                bgColor={isActive ? "blue" : "gray"}
                                 onClick={() => setActiveTab(tab.value)}
                                 border={"solid black 1px"}
                                 flexGrow={1}

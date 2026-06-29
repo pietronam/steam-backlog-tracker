@@ -1,7 +1,7 @@
-import { LibrarySelector } from "./components/LibrarySelector"
+import { GameSelector } from "./components/GameSelector"
 
 function App() {
-  return <LibrarySelector />
+  return <GameSelector />
 }
 
 export default App;
