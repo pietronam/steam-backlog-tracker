@@ -13,16 +13,14 @@ export const emptyUser: userType = {
 
 export async function getUserData(steamId: string): Promise<userType> {
     try {
-        const response = await fetch(
-            `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=1C9C70A0772D3741F66AA91BA733CE7E&steamids=${steamId}`
-        )
+        const response = await fetch(`/api/player/${steamId}`)
 
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`)
         }
 
         const data = (await response.json()) as getPlayerSummariesResponse
-        const player = data?.players?.[0]
+        const player = data?.response.players?.[0]
 
         if (!player) {
             return emptyUser
