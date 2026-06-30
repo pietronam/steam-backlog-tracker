@@ -1,5 +1,5 @@
 export type userType = {
-    steamid: number,  //the response is a number string
+    steamid: string,  //the response is a number string
     username: string, //personaname in the response
     profileurl: string,
     avatar: string,    //32x32px

@@ -1,11 +1,27 @@
+import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
+import { SteamDataProvider } from "../src/context/SteamDataContext"
 import type { Preview } from '@storybook/react-vite'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const preview: Preview = {
+  decorators: [
+    (Story) => (
+      <ChakraProvider value={defaultSystem}>
+        <QueryClientProvider client={queryClient}>
+          <SteamDataProvider>
+            <Story />
+          </SteamDataProvider>
+        </QueryClientProvider>
+      </ChakraProvider>
+    ),
+  ],
   parameters: {
     controls: {
       matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
+        color: /(background|color)$/i,
+        date: /Date$/i,
       },
     },
 

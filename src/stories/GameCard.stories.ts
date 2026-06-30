@@ -1,20 +1,7 @@
-import { createElement, type ReactElement } from "react"
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
-
-import { GameCard, type GameCardProps } from "../components/GameCard"
+import { GameCard } from "../components/GameCard"
 import type { GameType } from "../types/gameType"
 
-const renderWithChakra = (args: GameCardProps) =>
-  createElement(
-    ChakraProvider,
-    {
-      value: defaultSystem,
-      children: createElement(GameCard as (props: GameCardProps) => ReactElement, {
-        game: args.game,
-      }),
-    },
-  )
 
 const sampleGame: GameType = {
   name: "Team Fortress 2",
@@ -48,7 +35,6 @@ const meta = {
   args: {
     game: sampleGame,
   },
-  render: (args) => renderWithChakra(args as GameCardProps),
 } satisfies Meta<typeof GameCard>
 
 export default meta

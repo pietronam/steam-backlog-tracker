@@ -2,7 +2,7 @@ import type { userType } from "../types/userType"
 import type { getPlayerSummariesResponse } from "../types/responses/getPlayerSummariesResponse"
 
 export const emptyUser: userType = {
-    steamid: 0,
+    steamid: "",
     username: "",
     profileurl: "",
     avatar: "",
@@ -11,10 +11,10 @@ export const emptyUser: userType = {
     personastate: 0,
 }
 
-export async function getUserData(apiKey: string, steamId: string): Promise<userType> {
+export async function getUserData(steamId: string): Promise<userType> {
     try {
         const response = await fetch(
-            `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apiKey}&steamids=${steamId}`
+            `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=1C9C70A0772D3741F66AA91BA733CE7E&steamids=${steamId}`
         )
 
         if (!response.ok) {
@@ -29,7 +29,7 @@ export async function getUserData(apiKey: string, steamId: string): Promise<user
         }
 
         return {
-            steamid: Number(player.steamid),
+            steamid: player.steamid,
             username: player.personaname,
             profileurl: player.profileurl,
             avatar: player.avatar,

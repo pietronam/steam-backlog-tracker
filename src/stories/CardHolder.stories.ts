@@ -1,21 +1,6 @@
-import { createElement, type ReactElement } from "react"
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react"
 
 import { CardHolder } from "../components/CardHolder"
 import type { GameType } from "../types/gameType"
-
-type CardHolderStoryArgs = {
-  games: GameType[]
-}
-
-const renderWithChakra = (args: CardHolderStoryArgs): ReactElement =>
-  createElement(
-    ChakraProvider,
-    {
-      value: defaultSystem,
-      children: createElement(CardHolder as (props: CardHolderStoryArgs) => ReactElement, args),
-    },
-  )
 
 const sampleGames: GameType[] = [
   {
@@ -158,7 +143,6 @@ const meta = {
   args: {
     games: sampleGames,
   },
-  render: (args: CardHolderStoryArgs) => renderWithChakra(args),
 }
 
 export default meta

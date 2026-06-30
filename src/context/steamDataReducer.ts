@@ -18,7 +18,7 @@ export type SteamDataAction =
   | { type: "CLEAR_DATA" };
 
 const emptyUser: userType = {
-  steamid: 0,
+  steamid: "",
   username: "",
   profileurl: "",
   avatar: "",
