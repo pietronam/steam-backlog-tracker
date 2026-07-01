@@ -19,18 +19,8 @@ export async function getUserGames(steamId: string): Promise<GameType[]> {
 
         const games: GameType[] = data.response.games.map((game) => {
             return {
-                appid: game.appid,
+                appId: game.appid,
                 name: game.name,
-                game_details: {
-                    developers: [],
-                    genres: [],
-                    publishers: [],
-                    short_description: "",
-                    metacritic: {
-                        score: 0,
-                        url: ""
-                    },
-                },
                 status: "untracked",
                 custom_tags: [],
                 custom_description: "",

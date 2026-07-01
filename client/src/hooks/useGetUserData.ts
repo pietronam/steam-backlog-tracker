@@ -1,12 +1,12 @@
 import { type UseQueryOptions, useQuery } from "@tanstack/react-query"
 import { getUserData } from "../api/getUserData"
-import type { userType } from "../types/userType"
+import type { UserType } from "../types/userType"
 
 export type useGetUserDataOptions = Omit<
     UseQueryOptions<
-        userType,
+        UserType,
         Error,
-        userType,
+        UserType,
         readonly ["login", string]
     >,
     "queryKey" | "queryFn"

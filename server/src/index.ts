@@ -54,6 +54,28 @@ app.get("/api/games/:steamId", async (req, res) => {
     }
 })
 
+app.get("/api/games/detail/:appId", async (req, res) => {
+    const { appId } = req.params
+
+    try {
+        const response = await fetch(
+            `https://store.steampowered.com/api/appdetails?appids=${appId}`
+        )
+
+        if (!response.ok) {
+            return res.sendStatus(response.status)
+        }
+
+        const data = await response.json()
+
+        res.json(data)
+    } catch {
+        res.status(500).json({
+            error: "Failed to fetch user games.",
+        })
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Proxy listening on http://localhost:${PORT}`)
 })

@@ -1,13 +1,13 @@
 import { useMutation } from "@tanstack/react-query"
 import { useSteamData } from "../context/SteamDataContext"
 import { getUserGames } from "../api/getUserGames"
-import type { userType } from "../types/userType"
+import type { UserType } from "../types/userType"
 
 export const useLogin = () => {
     const { setSession } = useSteamData()
 
     return useMutation({
-        mutationFn: async (user: userType) => {
+        mutationFn: async (user: UserType) => {
             const games = await getUserGames(user.steamid)
 
             return {

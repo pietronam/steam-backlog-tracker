@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useReducer } from "react";
 import type { GameType } from "../types/gameType";
 import type { SteamDataState } from "../types/steamDataState";
-import type { userType } from "../types/userType";
+import type { UserType } from "../types/userType";
 import {
   initialSteamDataState,
   steamDataReducer,
@@ -12,16 +12,16 @@ const STORAGE_KEY = "steamDataState";
 
 type SteamDataContextValue = {
   state: SteamDataState;
-  setSteamUser: (user: userType) => void;
-  setSession: (user: userType, games: GameType[]) => void;
+  setSteamUser: (user: UserType) => void;
+  setSession: (user: UserType, games: GameType[]) => void;
   addGames: (games: GameType[]) => void;
-  removeGames: (appids: number[]) => void;
-  addCustomTag: (appid: number, tag: string) => void;
-  removeCustomTag: (appid: number, tag: string) => void;
-  addCustomDescription: (appid: number, description: string) => void;
-  removeCustomDescription: (appid: number) => void;
+  removeGames: (appIds: number[]) => void;
+  addCustomTag: (appId: number, tag: string) => void;
+  removeCustomTag: (appId: number, tag: string) => void;
+  addCustomDescription: (appId: number, description: string) => void;
+  removeCustomDescription: (appId: number) => void;
   changeGameStatus: (
-    appid: number,
+    appId: number,
     status: "completed" | "backlog" | "untracked",
   ) => void;
   clearData: () => void;
@@ -68,29 +68,29 @@ export function SteamDataProvider({ children }: { children: ReactNode }) {
 
   const contextValue: SteamDataContextValue = {
     state,
-    setSteamUser: (user: userType) =>
+    setSteamUser: (user: UserType) =>
       dispatch({ type: "SET_STEAM_USER", payload: user }),
-    setSession: (user: userType, games: GameType[]) =>
+    setSession: (user: UserType, games: GameType[]) =>
       dispatch({ type: "SET_SESSION", payload: { user, games } }),
     addGames: (games: GameType[]) =>
       dispatch({ type: "ADD_GAMES", payload: games }),
-    removeGames: (appids: number[]) =>
-      dispatch({ type: "REMOVE_GAMES", payload: appids }),
-    addCustomTag: (appid: number, tag: string) =>
-      dispatch({ type: "ADD_CUSTOM_TAG", payload: { appid, tag } }),
-    removeCustomTag: (appid: number, tag: string) =>
-      dispatch({ type: "REMOVE_CUSTOM_TAG", payload: { appid, tag } }),
-    addCustomDescription: (appid: number, description: string) =>
+    removeGames: (appIds: number[]) =>
+      dispatch({ type: "REMOVE_GAMES", payload: appIds }),
+    addCustomTag: (appId: number, tag: string) =>
+      dispatch({ type: "ADD_CUSTOM_TAG", payload: { appId, tag } }),
+    removeCustomTag: (appId: number, tag: string) =>
+      dispatch({ type: "REMOVE_CUSTOM_TAG", payload: { appId, tag } }),
+    addCustomDescription: (appId: number, description: string) =>
       dispatch({
         type: "ADD_CUSTOM_DESCRIPTION",
-        payload: { appid, description },
+        payload: { appId, description },
       }),
-    removeCustomDescription: (appid: number) =>
-      dispatch({ type: "REMOVE_CUSTOM_DESCRIPTION", payload: { appid } }),
+    removeCustomDescription: (appId: number) =>
+      dispatch({ type: "REMOVE_CUSTOM_DESCRIPTION", payload: { appId } }),
     changeGameStatus: (
-      appid: number,
+      appId: number,
       status: "completed" | "backlog" | "untracked",
-    ) => dispatch({ type: "CHANGE_GAME_STATUS", payload: { appid, status } }),
+    ) => dispatch({ type: "CHANGE_GAME_STATUS", payload: { appId, status } }),
     clearData: () => dispatch({ type: "CLEAR_DATA" }),
   };
 

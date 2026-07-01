@@ -1,7 +1,7 @@
 import type { GameType } from "./gameType"
-import type { userType } from "./userType"
+import type { UserType } from "./userType"
 
 export interface SteamDataState {
-    user: userType,
+    user: UserType,
     games: GameType[]
 }

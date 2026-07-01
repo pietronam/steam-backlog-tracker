@@ -1,7 +1,7 @@
-import type { userType } from "../types/userType"
+import type { UserType } from "../types/userType"
 import type { getPlayerSummariesResponse } from "../types/responses/getPlayerSummariesResponse"
 
-export const emptyUser: userType = {
+export const emptyUser: UserType = {
     steamid: "",
     username: "",
     profileurl: "",
@@ -11,7 +11,7 @@ export const emptyUser: userType = {
     personastate: 0,
 }
 
-export async function getUserData(steamId: string): Promise<userType> {
+export async function getUserData(steamId: string): Promise<UserType> {
     try {
         const response = await fetch(`/api/player/${steamId}`)
 

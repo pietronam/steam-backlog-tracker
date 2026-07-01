@@ -1,4 +1,4 @@
-export type userType = {
+export type UserType = {
     steamid: string,  //the response is a number string
     username: string, //personaname in the response
     profileurl: string,
