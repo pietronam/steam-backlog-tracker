@@ -27,7 +27,29 @@ app.get("/api/player/:steamId", async (req, res) => {
         res.json(data)
     } catch {
         res.status(500).json({
-            error: "Failed to contact Steam API",
+            error: "Failed to fetch user data.",
+        })
+    }
+})
+
+app.get("/api/games/:steamId", async (req, res) => {
+    const { steamId } = req.params
+
+    try {
+        const response = await fetch(
+            `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${process.env.STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=true&include_played_free_games=true`
+        )
+
+        if (!response.ok) {
+            return res.sendStatus(response.status)
+        }
+
+        const data = await response.json()
+
+        res.json(data)
+    } catch {
+        res.status(500).json({
+            error: "Failed to fetch user games.",
         })
     }
 })

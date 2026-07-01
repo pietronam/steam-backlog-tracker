@@ -1,39 +1,23 @@
-import { useEffect } from "react"
-import { type UseQueryOptions, useQuery } from "@tanstack/react-query"
-import { getUserData } from "../api/getUserData"
+import { useMutation } from "@tanstack/react-query"
 import { useSteamData } from "../context/SteamDataContext"
+import { getUserGames } from "../api/getUserGames"
 import type { userType } from "../types/userType"
 
-export type UseLoginOptions = Omit<
-    UseQueryOptions<
-        userType,
-        Error,
-        userType,
-        readonly ["login", string]
-    >,
-    "queryKey" | "queryFn"
->
+export const useLogin = () => {
+    const { setSession } = useSteamData()
 
-export function useLogin(
-    steamId: string,
-    options?: UseLoginOptions,
-) {
-    const { setSteamUser } = useSteamData()
+    return useMutation({
+        mutationFn: async (user: userType) => {
+            const games = await getUserGames(user.steamid)
 
-    const queryKey = ["login", steamId] as const
+            return {
+                user,
+                games,
+            }
+        },
 
-    const query = useQuery({
-        queryKey,
-        queryFn: () => getUserData(steamId),
-        enabled: Boolean(steamId && (options?.enabled ?? true)),
-        ...options,
+        onSuccess: ({ user, games }) => {
+            setSession(user, games)
+        },
     })
-
-    useEffect(() => {
-        if (query.data?.steamid && query.data.steamid) {
-            setSteamUser(query.data)
-        }
-    }, [query.data, setSteamUser])
-
-    return query
 }

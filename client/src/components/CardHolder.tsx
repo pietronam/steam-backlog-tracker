@@ -59,7 +59,7 @@ export const CardHolder = ({ games }: CardHolderProps) => {
                             <DialogHeader>
                                 <DialogTitle>{selectedGame?.name ?? "Game details"}</DialogTitle>
                                 <DialogDescription>
-                                    {selectedGame?.game_info.short_description}
+                                    {selectedGame?.game_details.short_description}
                                 </DialogDescription>
                             </DialogHeader>
                             <DialogBody>
@@ -76,23 +76,23 @@ export const CardHolder = ({ games }: CardHolderProps) => {
 
                                         <Box>
                                             <Text fontWeight="bold">Developers</Text>
-                                            <Text>{selectedGame.game_info.developers.join(", ")}</Text>
+                                            <Text>{selectedGame.game_details.developers.join(", ")}</Text>
                                         </Box>
 
                                         <Box>
                                             <Text fontWeight="bold">Publishers</Text>
-                                            <Text>{selectedGame.game_info.publishers.join(", ")}</Text>
+                                            <Text>{selectedGame.game_details.publishers.join(", ")}</Text>
                                         </Box>
 
                                         <Box>
                                             <Text fontWeight="bold">Genres</Text>
-                                            <Text>{selectedGame.game_info.genres.map((genre) => genre.description).join(", ")}</Text>
+                                            <Text>{selectedGame.game_details.genres.map((genre) => genre.description).join(", ")}</Text>
                                         </Box>
 
-                                        {selectedGame.game_info.metacritic ? (
+                                        {selectedGame.game_details.metacritic ? (
                                             <Box>
                                                 <Text fontWeight="bold">Metacritic</Text>
-                                                <Text>{selectedGame.game_info.metacritic.score}</Text>
+                                                <Text>{selectedGame.game_details.metacritic.score}</Text>
                                             </Box>
                                         ) : null}
 

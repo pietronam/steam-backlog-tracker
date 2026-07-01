@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useReducer } from "react";
+import type { GameType } from "../types/gameType";
 import type { SteamDataState } from "../types/steamDataState";
 import type { userType } from "../types/userType";
 import {
   initialSteamDataState,
-  steamDataReducer
+  steamDataReducer,
 } from "./steamDataReducer";
 
 const STORAGE_KEY = "steamDataState";
@@ -12,6 +13,9 @@ const STORAGE_KEY = "steamDataState";
 type SteamDataContextValue = {
   state: SteamDataState;
   setSteamUser: (user: userType) => void;
+  setSession: (user: userType, games: GameType[]) => void;
+  addGames: (games: GameType[]) => void;
+  removeGames: (appids: number[]) => void;
   addCustomTag: (appid: number, tag: string) => void;
   removeCustomTag: (appid: number, tag: string) => void;
   addCustomDescription: (appid: number, description: string) => void;
@@ -64,7 +68,14 @@ export function SteamDataProvider({ children }: { children: ReactNode }) {
 
   const contextValue: SteamDataContextValue = {
     state,
-    setSteamUser: (user: userType) => dispatch({ type: "SET_STEAM_USER", payload: user }),
+    setSteamUser: (user: userType) =>
+      dispatch({ type: "SET_STEAM_USER", payload: user }),
+    setSession: (user: userType, games: GameType[]) =>
+      dispatch({ type: "SET_SESSION", payload: { user, games } }),
+    addGames: (games: GameType[]) =>
+      dispatch({ type: "ADD_GAMES", payload: games }),
+    removeGames: (appids: number[]) =>
+      dispatch({ type: "REMOVE_GAMES", payload: appids }),
     addCustomTag: (appid: number, tag: string) =>
       dispatch({ type: "ADD_CUSTOM_TAG", payload: { appid, tag } }),
     removeCustomTag: (appid: number, tag: string) =>
@@ -80,7 +91,7 @@ export function SteamDataProvider({ children }: { children: ReactNode }) {
       appid: number,
       status: "completed" | "backlog" | "untracked",
     ) => dispatch({ type: "CHANGE_GAME_STATUS", payload: { appid, status } }),
-    clearData: () => dispatch({ type: "CLEAR_DATA" })
+    clearData: () => dispatch({ type: "CLEAR_DATA" }),
   };
 
   return (

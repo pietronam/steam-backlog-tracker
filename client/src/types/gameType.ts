@@ -3,7 +3,7 @@ export type GameType = {
     name: string,
     status: "completed" | "backlog" | "untracked",
     custom_tags: string[],
-    game_info: {
+    game_details: {
         genres: {
             id: string,
             description: string,
@@ -11,7 +11,7 @@ export type GameType = {
         short_description: string,
         developers: string[],
         publishers: string[],
-        metacritic?: {
+        metacritic: {
             score: number,
             url: string,
         },

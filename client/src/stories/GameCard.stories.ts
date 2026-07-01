@@ -9,7 +9,7 @@ const sampleGame: GameType = {
   status: "backlog",
   custom_tags: ["shooter", "multiplayer"],
   custom_description: "A great candidate for the backlog.",
-  game_info: {
+  game_details: {
     short_description:
       "A fast-paced class-based shooter with a huge roster of memorable characters.",
     developers: ["Valve"],
