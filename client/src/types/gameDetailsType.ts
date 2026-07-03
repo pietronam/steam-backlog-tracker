@@ -1,4 +1,5 @@
 export type GameDetailsType = {
+    header_image: string,
     genres: {
         id: string,
         description: string,

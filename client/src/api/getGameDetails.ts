@@ -2,6 +2,7 @@ import type { GameDetailsType } from "../types/gameDetailsType"
 import type { GetAppDetailsResponseType } from "../types/responses/getAppDetailsResponse"
 
 const emptyGameDetails: GameDetailsType = {
+    header_image: "",
     genres: [],
     categories: [],
     about_the_game: "",
@@ -41,6 +42,7 @@ export async function getGameDetails(appId: number): Promise<GameDetailsType> {
         }
 
         const gameDetails: GameDetailsType = {
+            header_image: gameData.header_image,
             genres: gameData.genres?.map((genre) => ({
                 id: genre.id.toString(),
                 description: genre.description,
