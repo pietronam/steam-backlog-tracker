@@ -1,6 +1,7 @@
-import { Badge, Box, Button, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPositioner, DialogRoot, DialogTitle, HStack, Portal, Spinner, Text, VStack, type DialogOpenChangeDetails } from "@chakra-ui/react";
+import { Box, Button, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPositioner, DialogRoot, DialogTitle, HStack, Portal, Spinner, Text, VStack, type DialogOpenChangeDetails } from "@chakra-ui/react";
 import type { GameType } from "../types/gameType";
 import { useGameDetails } from "../hooks/useGameDetails";
+import { useSteamData } from "../context/SteamDataContext";
 
 type GameDetailDialogProps = {
     game: GameType,
@@ -34,8 +35,20 @@ const emptyGameDetails = {
 
 export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDialogProps) => {
     const { data: gameDetails, isFetching, isError, error } = useGameDetails(game.appId);
+    const { changeGameStatus } = useSteamData();
 
     const details = gameDetails ?? emptyGameDetails;
+    const statusOptions: Array<{ label: string; status: GameType["status"] }> = [
+        { label: "Add to backlog", status: "backlog" },
+        { label: "Mark completed", status: "completed" },
+        { label: "Mark untracked", status: "untracked" },
+    ];
+
+    const visibleStatusOptions = statusOptions.filter(({ status }) => status !== game.status);
+
+    const handleStatusChange = (status: GameType["status"]) => {
+        changeGameStatus(game.appId, status);
+    };
 
     return <DialogRoot open={open} onOpenChange={handleOpenChange} size={"cover"} placement={"center"}>
         <Portal>
@@ -60,40 +73,52 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                         ) : (
                             <VStack align="stretch" gap={4}>
                                 <HStack gap={2} wrap="wrap">
-                                    <Badge colorScheme="green">{game.status}</Badge>
-                                    {game.custom_tags.map((tag) => (
-                                        <Badge key={tag} colorScheme="blue">
-                                            {tag}
-                                        </Badge>
+                                    {visibleStatusOptions.map(({ label, status }) => (
+                                        <Button key={status} size="sm" onClick={() => handleStatusChange(status)}>
+                                            {label}
+                                        </Button>
                                     ))}
                                 </HStack>
 
-                                <Box>
-                                    <Text fontWeight="bold">Developers</Text>
-                                    <Text>{details.developers.join(", ")}</Text>
-                                </Box>
+                                {/* IMPLEMENT BUTTONS HERE */}
 
-                                <Box>
-                                    <Text fontWeight="bold">Publishers</Text>
-                                    <Text>{details.publishers.join(", ")}</Text>
-                                </Box>
+                                {/* <VStack align="stretch" gap={4}>
+                                    <HStack gap={2} wrap="wrap">
+                                        <Badge colorScheme="green">{game.status}</Badge>
+                                        {game.custom_tags.map((tag) => (
+                                            <Badge key={tag} colorScheme="blue">
+                                                {tag}
+                                            </Badge>
+                                        ))}
+                                    </HStack>
 
-                                <Box>
-                                    <Text fontWeight="bold">Genres</Text>
-                                    <Text>{details.genres.map((genre) => genre.description).join(", ")}</Text>
-                                </Box>
-
-                                {details.metacritic ? (
                                     <Box>
-                                        <Text fontWeight="bold">Metacritic</Text>
-                                        <Text>{details.metacritic.score}</Text>
+                                        <Text fontWeight="bold">Developers</Text>
+                                        <Text>{details.developers.join(", ")}</Text>
                                     </Box>
-                                ) : null}
 
-                                <Box>
-                                    <Text fontWeight="bold">Description</Text>
-                                    <Text>{game.custom_description}</Text>
-                                </Box>
+                                    <Box>
+                                        <Text fontWeight="bold">Publishers</Text>
+                                        <Text>{details.publishers.join(", ")}</Text>
+                                    </Box>
+
+                                    <Box>
+                                        <Text fontWeight="bold">Genres</Text>
+                                        <Text>{details.genres.map((genre) => genre.description).join(", ")}</Text>
+                                    </Box>
+
+                                    {details.metacritic ? (
+                                        <Box>
+                                            <Text fontWeight="bold">Metacritic</Text>
+                                            <Text>{details.metacritic.score}</Text>
+                                        </Box>
+                                    ) : null}
+
+                                    <Box>
+                                        <Text fontWeight="bold">Description</Text>
+                                        <Text>{game.custom_description}</Text>
+                                    </Box>
+                                </VStack> */}
                             </VStack>
                         )}
                     </DialogBody>
