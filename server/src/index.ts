@@ -59,7 +59,7 @@ app.get("/api/games/detail/:appId", async (req, res) => {
 
     try {
         const response = await fetch(
-            `https://store.steampowered.com/api/appdetails?appids=${appId}`
+            `https://store.steampowered.com/api/appdetails?appids=${appId}&l=english`
         )
 
         if (!response.ok) {

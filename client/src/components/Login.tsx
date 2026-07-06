@@ -11,13 +11,22 @@ import {
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 
-import { useLogin } from "../hooks/useLogin"
 import { useGetUserData } from "../hooks/useGetUserData"
+import { useLogin } from "../hooks/useLogin"
+import { steamButtons } from "./theming/steamButtons"
+import { steamLayout } from "./theming/steamLayout"
+import { steamMisc } from "./theming/steamMisc"
+import { steamText } from "./theming/steamText"
 
 export const Login = () => {
     const [input, setInput] = useState("")
     const [submittedSteamId, setSubmittedSteamId] = useState("")
     const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+
+    const defaultStyle = {
+        ...steamLayout.page,
+        ...steamText.defaultText
+    }
 
     const {
         data,
@@ -49,10 +58,11 @@ export const Login = () => {
         setSubmittedSteamId("")
     }
 
+
     return (
-        <>
-            <Box maxW="md" mx="auto" mt={10}>
-                <Heading size="lg" mb={6}>
+        <Box css={defaultStyle}>
+            <Box maxW="md" mx="auto" py={6}>
+                <Heading css={steamText.heading} size="lg" mb={6}>
                     Login with your Steam ID
                 </Heading>
 
@@ -60,6 +70,7 @@ export const Login = () => {
                     <Field.Label>Steam ID</Field.Label>
 
                     <Input
+                        css={steamMisc.input}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Enter your Steam ID"
@@ -67,6 +78,7 @@ export const Login = () => {
                 </Field.Root>
 
                 <Button
+                    css={steamButtons.primaryButton}
                     onClick={handleSubmit}
                     loading={isFetching}
                     loadingText="Searching..."
@@ -91,7 +103,7 @@ export const Login = () => {
                     <Dialog.Backdrop />
 
                     <Dialog.Positioner>
-                        <Dialog.Content>
+                        <Dialog.Content css={steamLayout.panel}>
                             <Dialog.Header>
                                 <Dialog.Title>
                                     Is this your Steam account?
@@ -116,6 +128,7 @@ export const Login = () => {
                             <Dialog.Footer>
                                 <HStack gap={3}>
                                     <Button
+                                        css={steamButtons.secondaryButton}
                                         variant="outline"
                                         onClick={handleDeny}
                                         disabled={loginMutation.isPending}
@@ -124,7 +137,7 @@ export const Login = () => {
                                     </Button>
 
                                     <Button
-                                        colorScheme="blue"
+                                        css={steamButtons.successButton}
                                         onClick={handleConfirm}
                                         loading={loginMutation.isPending}
                                         loadingText="Logging in..."
@@ -143,6 +156,6 @@ export const Login = () => {
                     {loginMutation.error.message}
                 </Text>
             )}
-        </>
+        </Box>
     )
 }

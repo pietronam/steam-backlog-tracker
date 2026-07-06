@@ -3,6 +3,8 @@ import { useState } from "react"
 import { useSteamData } from "../context/SteamDataContext"
 import type { GameType } from "../types/gameType"
 import { CardHolder } from "./CardHolder"
+import { steamText } from "./theming/steamText"
+import { steamLayout } from "./theming/steamLayout"
 
 type LibraryTab = "backlog" | "completed" | "library"
 
@@ -25,7 +27,7 @@ export const GameSelector = () => {
     const visibleGames = state.games.filter((game) => matchesTab(game, activeTab))
 
     return (
-        <Box width="full">
+        <Box css={steamLayout.panel} w={("90vw")} my={10}>
             <Box px={4} py={3}>
                 <HStack width="full" wrap="wrap" gap={2} justifyContent={"space-between"}>
                     {tabs.map((tab) => {
@@ -33,6 +35,7 @@ export const GameSelector = () => {
 
                         return (
                             <Flex
+                                css={steamText.heading}
                                 key={tab.value}
                                 bgColor={isActive ? "blue" : "gray"}
                                 onClick={() => setActiveTab(tab.value)}

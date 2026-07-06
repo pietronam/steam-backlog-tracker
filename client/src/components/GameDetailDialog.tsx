@@ -1,8 +1,13 @@
-import { Badge, Box, Button, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPositioner, DialogRoot, DialogTitle, Flex, HStack, Image, Portal, Spinner, Text, VStack, type DialogOpenChangeDetails } from "@chakra-ui/react";
+import { Badge, Box, Button, CloseButton, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPositioner, DialogRoot, DialogTitle, Flex, HStack, Image, Portal, Spinner, Text, VStack, type DialogOpenChangeDetails } from "@chakra-ui/react";
 import type { GameType } from "../types/gameType";
 import { useGameDetails } from "../hooks/useGameDetails";
 import { useSteamData } from "../context/SteamDataContext";
 import { sanitizeSteamDescription } from "../utils/sanitizeSteamDescriptions";
+import { steamLayout } from "./theming/steamLayout";
+import { steamText } from "./theming/steamText";
+import { steamButtons } from "./theming/steamButtons";
+import { steamMisc } from "./theming/steamMisc";
+import { steamColors } from "./theming/steamColors";
 
 type GameDetailDialogProps = {
     game: GameType,
@@ -55,19 +60,19 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
         <Portal>
             <DialogBackdrop />
             <DialogPositioner>
-                <DialogContent>
+                <DialogContent css={steamLayout.panel}>
                     <DialogHeader display="flex" flexDirection={"column"} alignItems="flex-start" gap={4}>
-                        <DialogTitle>{game.name ?? "Game details"}</DialogTitle>
+                        <DialogTitle css={steamText.heading}>{game.name ?? "Game details"}</DialogTitle>
                         <Flex direction={"row"} minW={0} gap={4} align="flex-start">
                             <Image src={gameDetails?.header_image} flex="0 0 30%" maxW="30%" objectFit="cover" />
                             <DialogDescription minW={0} flex="1">
-                                <Text lineClamp={5} dangerouslySetInnerHTML={{ __html: sanitizeSteamDescription(details.about_the_game) }} />
+                                <Text css={steamText.defaultText} lineClamp={8} dangerouslySetInnerHTML={{ __html: sanitizeSteamDescription(details.about_the_game) }} />
                             </DialogDescription>
                         </Flex>
                     </DialogHeader>
                     <DialogBody>
                         {isError ? (
-                            <Text color="red.500">
+                            <Text css={steamText.defaultText} color="red.500">
                                 Unable to load game details{error ? `: ${error.message}` : "."}
                             </Text>
                         ) : isFetching ? (
@@ -78,16 +83,16 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                             <VStack align="stretch" gap={4}>
                                 <HStack gap={2} wrap="wrap">
                                     {visibleStatusOptions.map(({ label, status }) => (
-                                        <Button key={status} size="sm" onClick={() => handleStatusChange(status)}>
+                                        <Button css={steamButtons.secondaryButton} key={status} size="sm" onClick={() => handleStatusChange(status)}>
                                             {label}
                                         </Button>
                                     ))}
                                 </HStack>
 
                                 <HStack gap={2} wrap="wrap">
-                                    <Badge colorScheme="green" px={3} py={1} fontSize="sm">{game.status}</Badge>
+                                    <Badge css={steamMisc.storeTag} colorScheme="green" px={3} py={1} fontSize="sm">{game.status}</Badge>
                                     {gameDetails?.genres.map((genre) => (
-                                        <Badge key={genre.id} colorScheme="blue" px={3} py={1} fontSize="sm">
+                                        <Badge css={steamMisc.storeTag} key={genre.id} px={3} py={1} fontSize="sm">
                                             {genre.description}
                                         </Badge>
                                     ))}
@@ -97,6 +102,7 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                                         </Badge>
                                     ))}
                                     <Button
+                                        css={steamMisc.storeTag}
                                         size="sm"
                                         variant="outline"
                                         onClick={() => {
@@ -106,34 +112,34 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                                             }
                                         }}
                                     >
-                                        Add custom tag
+                                        + add custom tag
                                     </Button>
                                 </HStack>
                                 <Flex justifyContent={"space-between"}>
                                     <Flex direction={"column"} gap={4} flex="0 0 34%">
                                         <Box minW={0}>
-                                            <Text fontWeight="bold">Genres</Text>
-                                            <Text>{details.genres.map((genre) => genre.description).join(", ")}</Text>
+                                            <Text css={steamText.defaultText} fontWeight="bold">Genres</Text>
+                                            <Text css={steamText.defaultText}>{details.genres.map((genre) => genre.description).join(", ")}</Text>
                                         </Box>
                                         <Box>
-                                            <Text fontWeight="bold">Metacritic</Text>
-                                            <Text>{details.metacritic ? details.metacritic.score : "No metacritic data found."}</Text>
+                                            <Text css={steamText.defaultText} fontWeight="bold">Metacritic</Text>
+                                            <Text css={steamText.defaultText}>{details.metacritic ? details.metacritic.score : "No metacritic data found."}</Text>
                                         </Box>
                                     </Flex>
                                     <Flex direction={"column"} gap={4} flex="0 0 34%">
                                         <Box flex="1" minW={0}>
-                                            <Text fontWeight="bold">Developers</Text>
-                                            <Text>{details.developers.join(", ")}</Text>
+                                            <Text css={steamText.defaultText} fontWeight="bold">Developers</Text>
+                                            <Text css={steamText.defaultText}>{details.developers.join(", ")}</Text>
                                         </Box>
                                         <Box flex="1" minW={0}>
-                                            <Text fontWeight="bold">Publishers</Text>
-                                            <Text>{details.publishers.join(", ")}</Text>
+                                            <Text css={steamText.defaultText} fontWeight="bold">Publishers</Text>
+                                            <Text css={steamText.defaultText}>{details.publishers.join(", ")}</Text>
                                         </Box>
                                     </Flex>
                                     <Flex direction={"column"} gap={4} flex="0 0 34%">
                                         <Box>
-                                            <Text fontWeight="bold">Description</Text>
-                                            <Text>{game.custom_description ? game.custom_description : "No custom description."}</Text>
+                                            <Text css={steamText.defaultText} fontWeight="bold">Description</Text>
+                                            <Text css={steamText.defaultText}>{game.custom_description ? game.custom_description : "No custom description."}</Text>
                                         </Box>
                                     </Flex>
                                 </Flex>
@@ -142,7 +148,7 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                     </DialogBody>
                     <DialogFooter>
                         <DialogCloseTrigger asChild>
-                            <Button>Close</Button>
+                            <CloseButton color={steamColors.textPrimary} bgColor={'transparent'}/>
                         </DialogCloseTrigger>
                     </DialogFooter>
                 </DialogContent>
