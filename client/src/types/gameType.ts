@@ -1,7 +1,7 @@
 export type GameType = {
     appId: number,
     name: string,
-    custom_description: string,
+    custom_notes: string,
     status: "completed" | "backlog" | "untracked",
     custom_tags: string[],
 }

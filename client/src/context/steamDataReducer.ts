@@ -10,10 +10,9 @@ export type SteamDataAction =
   | { type: "ADD_CUSTOM_TAG"; payload: { appId: number; tag: string } }
   | { type: "REMOVE_CUSTOM_TAG"; payload: { appId: number; tag: string } }
   | {
-      type: "ADD_CUSTOM_DESCRIPTION";
-      payload: { appId: number; description: string };
+      type: "ADD_CUSTOM_NOTES";
+      payload: { appId: number; notes: string };
     }
-  | { type: "REMOVE_CUSTOM_DESCRIPTION"; payload: { appId: number } }
   | {
       type: "CHANGE_GAME_STATUS";
       payload: { appId: number; status: GameType["status"] };
@@ -98,22 +97,12 @@ export function steamDataReducer(
       };
     }
 
-    case "ADD_CUSTOM_DESCRIPTION": {
-      const { appId, description } = action.payload;
+    case "ADD_CUSTOM_NOTES": {
+      const { appId, notes } = action.payload;
       return {
         ...state,
         games: state.games.map((g) =>
-          g.appId === appId ? { ...g, custom_description: description } : g,
-        ),
-      };
-    }
-
-    case "REMOVE_CUSTOM_DESCRIPTION": {
-      const { appId } = action.payload;
-      return {
-        ...state,
-        games: state.games.map((g) =>
-          g.appId === appId ? { ...g, custom_description: "" } : g,
+          g.appId === appId ? { ...g, custom_notes: notes } : g,
         ),
       };
     }

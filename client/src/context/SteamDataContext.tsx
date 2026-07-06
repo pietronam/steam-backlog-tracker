@@ -18,8 +18,7 @@ type SteamDataContextValue = {
   removeGames: (appIds: number[]) => void;
   addCustomTag: (appId: number, tag: string) => void;
   removeCustomTag: (appId: number, tag: string) => void;
-  addCustomDescription: (appId: number, description: string) => void;
-  removeCustomDescription: (appId: number) => void;
+  addCustomNotes: (appId: number, Notes: string) => void;
   changeGameStatus: (
     appId: number,
     status: "completed" | "backlog" | "untracked",
@@ -80,13 +79,11 @@ export function SteamDataProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "ADD_CUSTOM_TAG", payload: { appId, tag } }),
     removeCustomTag: (appId: number, tag: string) =>
       dispatch({ type: "REMOVE_CUSTOM_TAG", payload: { appId, tag } }),
-    addCustomDescription: (appId: number, description: string) =>
+    addCustomNotes: (appId: number, notes: string) =>
       dispatch({
-        type: "ADD_CUSTOM_DESCRIPTION",
-        payload: { appId, description },
+        type: "ADD_CUSTOM_NOTES",
+        payload: { appId, notes },
       }),
-    removeCustomDescription: (appId: number) =>
-      dispatch({ type: "REMOVE_CUSTOM_DESCRIPTION", payload: { appId } }),
     changeGameStatus: (
       appId: number,
       status: "completed" | "backlog" | "untracked",

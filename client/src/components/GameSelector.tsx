@@ -5,6 +5,7 @@ import type { GameType } from "../types/gameType"
 import { CardHolder } from "./CardHolder"
 import { steamText } from "./theming/steamText"
 import { steamLayout } from "./theming/steamLayout"
+import { steamColors } from "./theming/steamColors"
 
 type LibraryTab = "backlog" | "completed" | "library"
 
@@ -27,22 +28,24 @@ export const GameSelector = () => {
     const visibleGames = state.games.filter((game) => matchesTab(game, activeTab))
 
     return (
-        <Box css={steamLayout.panel} w={("90vw")} my={10}>
+        <Box css={steamLayout.panel} w={("95vw")} my={10}>
             <Box px={4} py={3}>
                 <HStack width="full" wrap="wrap" gap={2} justifyContent={"space-between"}>
                     {tabs.map((tab) => {
                         const isActive = activeTab === tab.value
-
                         return (
                             <Flex
                                 css={steamText.heading}
                                 key={tab.value}
-                                bgColor={isActive ? "blue" : "gray"}
                                 onClick={() => setActiveTab(tab.value)}
-                                border={"solid black 1px"}
                                 flexGrow={1}
                             >
-                                {tab.label}
+                                <Text
+                                    borderBottom={"3px solid"}
+                                    borderBottomColor={isActive ? steamColors.blue : "transparent"}
+                                >
+                                    {tab.label}
+                                </Text>
                             </Flex>
                         )
                     })}

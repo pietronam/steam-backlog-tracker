@@ -1,4 +1,5 @@
-import { Badge, Box, Button, CloseButton, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPositioner, DialogRoot, DialogTitle, Flex, HStack, Image, Portal, Spinner, Text, VStack, type DialogOpenChangeDetails } from "@chakra-ui/react";
+import { Badge, Box, Button, CloseButton, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPositioner, DialogRoot, DialogTitle, Flex, HStack, Image, Portal, Spinner, Text, Textarea, VStack, type DialogOpenChangeDetails } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import type { GameType } from "../types/gameType";
 import { useGameDetails } from "../hooks/useGameDetails";
 import { useSteamData } from "../context/SteamDataContext";
@@ -41,7 +42,8 @@ const emptyGameDetails = {
 
 export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDialogProps) => {
     const { data: gameDetails, isFetching, isError, error } = useGameDetails(game.appId);
-    const { changeGameStatus, addCustomTag } = useSteamData();
+    const { changeGameStatus, addCustomTag, addCustomNotes } = useSteamData();
+    const [notesDraft, setNotesDraft] = useState(game.custom_notes);
 
     const details = gameDetails ?? emptyGameDetails;
     const statusOptions: Array<{ label: string; status: GameType["status"] }> = [
@@ -52,8 +54,16 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
 
     const visibleStatusOptions = statusOptions.filter(({ status }) => status !== game.status);
 
+    useEffect(() => {
+        setNotesDraft(game.custom_notes);
+    }, [game.appId, game.custom_notes]);
+
     const handleStatusChange = (status: GameType["status"]) => {
         changeGameStatus(game.appId, status);
+    };
+
+    const handleNotesSave = () => {
+        addCustomNotes(game.appId, notesDraft.trim());
     };
 
     return <DialogRoot open={open} onOpenChange={handleOpenChange} size={"cover"} placement={"center"}>
@@ -97,7 +107,7 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                                         </Badge>
                                     ))}
                                     {game.custom_tags.map((tag) => (
-                                        <Badge key={tag} colorScheme="blue" px={3} py={1} fontSize="sm">
+                                        <Badge css={steamMisc.storeTag} key={tag} px={3} py={1} fontSize="sm">
                                             {tag}
                                         </Badge>
                                     ))}
@@ -122,7 +132,7 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                                             <Text css={steamText.defaultText}>{details.genres.map((genre) => genre.description).join(", ")}</Text>
                                         </Box>
                                         <Box>
-                                            <Text css={steamText.defaultText} fontWeight="bold">Metacritic</Text>
+                                            <Text css={steamText.defaultText} fontWeight="bold">Metacritic Rating</Text>
                                             <Text css={steamText.defaultText}>{details.metacritic ? details.metacritic.score : "No metacritic data found."}</Text>
                                         </Box>
                                     </Flex>
@@ -138,8 +148,22 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                                     </Flex>
                                     <Flex direction={"column"} gap={4} flex="0 0 34%">
                                         <Box>
-                                            <Text css={steamText.defaultText} fontWeight="bold">Description</Text>
-                                            <Text css={steamText.defaultText}>{game.custom_description ? game.custom_description : "No custom description."}</Text>
+                                            <Text css={steamText.defaultText} fontWeight="bold">Notes</Text>
+                                            <Text css={steamText.defaultText}>{game.custom_notes ? game.custom_notes : "No custom notes."}</Text>
+                                            <Textarea
+                                                css={steamMisc.input}
+                                                value={notesDraft}
+                                                onChange={(event) => setNotesDraft(event.target.value)}
+                                                onBlur={handleNotesSave}
+                                                placeholder="Add a custom note"
+                                                minH="60px"
+                                                w="80%"
+                                                resize="vertical"
+                                                mt={2}
+                                            />
+                                            <Button css={steamButtons.secondaryButton} size="sm" mt={2} onClick={handleNotesSave}>
+                                                Save notes
+                                            </Button>
                                         </Box>
                                     </Flex>
                                 </Flex>
@@ -148,7 +172,7 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                     </DialogBody>
                     <DialogFooter>
                         <DialogCloseTrigger asChild>
-                            <CloseButton color={steamColors.textPrimary} bgColor={'transparent'}/>
+                            <CloseButton color={steamColors.textPrimary} bgColor={'transparent'} />
                         </DialogCloseTrigger>
                     </DialogFooter>
                 </DialogContent>

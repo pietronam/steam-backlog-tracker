@@ -23,7 +23,7 @@ export async function getUserGames(steamId: string): Promise<GameType[]> {
                 name: game.name,
                 status: "untracked",
                 custom_tags: [],
-                custom_description: "",
+                custom_notes: "",
             }
         })
 
