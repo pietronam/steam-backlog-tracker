@@ -3,7 +3,7 @@ import {
     Box,
     SimpleGrid
 } from "@chakra-ui/react"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import type { GameType } from "../types/gameType"
 import { GameCard } from "./GameCard"
 import { GameDetailDialog } from "./GameDetailDialog"
@@ -17,10 +17,10 @@ export const CardHolder = ({ games }: CardHolderProps) => {
     const [open, setOpen] = useState(false)
     const [game, setSelectedGame] = useState<GameType | null>(null)
 
-    const handleOpenGame = (game: GameType) => {
+    const handleOpenGame = useCallback((game: GameType) => {
         setSelectedGame(game)
         setOpen(true)
-    }
+    },[])
 
     const handleOpenChange = (details: DialogOpenChangeDetails) => {
         setOpen(details.open)

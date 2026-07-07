@@ -1,11 +1,11 @@
-import { useSteamData } from "./context/SteamDataContext";
-import { HomePage } from "./pages/HomePage";
 import { Login } from "./components/Login";
+import { useSteamDataState } from "./context/SteamDataContext";
+import { HomePage } from "./pages/HomePage";
 
 function App() {
-  const { state } = useSteamData();
+  const { user } = useSteamDataState();
 
-  if (state.user.steamid === "")
+  if (user.steamid === "")
     return <Login />
   else return <HomePage />
 }

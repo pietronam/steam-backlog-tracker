@@ -5,8 +5,9 @@ import {
     Text,
     VStack
 } from "@chakra-ui/react"
-import { useSteamData } from "../context/SteamDataContext"
+import { useSteamDataActions } from "../context/SteamDataContext"
 import type { GameType } from "../types/gameType"
+import { memo } from "react"
 
 const getCoverImageUrl = (appId: number) =>
     `https://shared.steamstatic.com/store_item_assets/steam/apps/${appId}/library_600x900.jpg`
@@ -16,10 +17,10 @@ export type GameCardProps = {
     onOpen?: (game: GameType) => void
 }
 
-export const GameCard = ({ game, onOpen }: GameCardProps) => {
+const GameCardComponent = ({ game, onOpen }: GameCardProps) => {
     const coverImageUrl = getCoverImageUrl(game.appId)
 
-    const { changeGameStatus } = useSteamData();
+    const { changeGameStatus } = useSteamDataActions();
     const handleStatusChange = (status: GameType["status"]) => {
         changeGameStatus(game.appId, status);
     };
@@ -105,8 +106,9 @@ export const GameCard = ({ game, onOpen }: GameCardProps) => {
                         e.stopPropagation()
                         if (game.status === "backlog") {
                             handleStatusChange("untracked")
+                        } else {
+                            handleStatusChange("backlog")
                         }
-                        handleStatusChange("backlog")
                     }}>
                         {game.status === "backlog" ? "Remove from\nbacklog" : "Backlog"}
                     </Button>
@@ -115,8 +117,9 @@ export const GameCard = ({ game, onOpen }: GameCardProps) => {
                         e.stopPropagation()
                         if (game.status === "completed") {
                             handleStatusChange("untracked")
+                        } else {
+                            handleStatusChange("completed")
                         }
-                        handleStatusChange("completed")
                     }}>
                         {game.status === "completed" ? "Unmark\ncompleted" : "Completed"}
                     </Button>
@@ -125,3 +128,5 @@ export const GameCard = ({ game, onOpen }: GameCardProps) => {
         </Box>
     )
 }
+
+export const GameCard = memo(GameCardComponent)

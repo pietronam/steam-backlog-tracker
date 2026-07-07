@@ -1,11 +1,11 @@
 import { Box, Flex, HStack, Text } from "@chakra-ui/react"
 import { useState } from "react"
-import { useSteamData } from "../context/SteamDataContext"
+import { useSteamDataState } from "../context/SteamDataContext"
 import type { GameType } from "../types/gameType"
 import { CardHolder } from "./CardHolder"
-import { steamText } from "./theming/steamText"
-import { steamLayout } from "./theming/steamLayout"
 import { steamColors } from "./theming/steamColors"
+import { steamLayout } from "./theming/steamLayout"
+import { steamText } from "./theming/steamText"
 
 type LibraryTab = "backlog" | "completed" | "library"
 
@@ -22,10 +22,10 @@ const matchesTab = (game: GameType, activeTab: LibraryTab) => {
 }
 
 export const GameSelector = () => {
-    const { state } = useSteamData()
+    const { games } = useSteamDataState()
     const [activeTab, setActiveTab] = useState<LibraryTab>("backlog")
 
-    const visibleGames = state.games.filter((game) => matchesTab(game, activeTab))
+    const visibleGames = games.filter((game) => matchesTab(game, activeTab))
 
     return (
         <Box css={steamLayout.panel} w={("95vw")} my={10}>

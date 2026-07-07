@@ -1,14 +1,14 @@
 import { Badge, Box, Button, CloseButton, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPositioner, DialogRoot, DialogTitle, Flex, HStack, Image, Portal, Spinner, Text, Textarea, VStack, type DialogOpenChangeDetails } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import type { GameType } from "../types/gameType";
+import { useSteamDataActions } from "../context/SteamDataContext";
 import { useGameDetails } from "../hooks/useGameDetails";
-import { useSteamData } from "../context/SteamDataContext";
+import type { GameType } from "../types/gameType";
 import { sanitizeSteamDescription } from "../utils/sanitizeSteamDescriptions";
-import { steamLayout } from "./theming/steamLayout";
-import { steamText } from "./theming/steamText";
 import { steamButtons } from "./theming/steamButtons";
-import { steamMisc } from "./theming/steamMisc";
 import { steamColors } from "./theming/steamColors";
+import { steamLayout } from "./theming/steamLayout";
+import { steamMisc } from "./theming/steamMisc";
+import { steamText } from "./theming/steamText";
 
 type GameDetailDialogProps = {
     game: GameType,
@@ -42,7 +42,7 @@ const emptyGameDetails = {
 
 export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDialogProps) => {
     const { data: gameDetails, isFetching, isError, error } = useGameDetails(game.appId);
-    const { changeGameStatus, addCustomTag, addCustomNotes } = useSteamData();
+    const { changeGameStatus, addCustomTag, addCustomNotes } = useSteamDataActions();
     const [notesDraft, setNotesDraft] = useState(game.custom_notes);
 
     const details = gameDetails ?? emptyGameDetails;
