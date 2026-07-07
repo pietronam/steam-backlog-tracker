@@ -42,7 +42,7 @@ const emptyGameDetails = {
 
 export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDialogProps) => {
     const { data: gameDetails, isFetching, isError, error } = useGameDetails(game.appId);
-    const { changeGameStatus, addCustomTag, addCustomNotes } = useSteamDataActions();
+    const { changeGameStatus, addCustomTag, addCustomNotes, addLookups, updateGameSummary } = useSteamDataActions();
     const [notesDraft, setNotesDraft] = useState(game.custom_notes);
 
     const details = gameDetails ?? emptyGameDetails;
@@ -55,6 +55,22 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
     const visibleStatusOptions = statusOptions.filter(({ status }) => status !== game.status);
 
     useEffect(() => {
+        if (!gameDetails) return;
+
+        addLookups(gameDetails.genres, gameDetails.categories);
+        updateGameSummary(game.appId, {
+            genreIds: gameDetails.genres.map((genre) => Number(genre.id)),
+            categoryIds: gameDetails.categories.map((category) => category.id),
+            developers: gameDetails.developers,
+            publishers: gameDetails.publishers,
+            metacritic: {
+                score: gameDetails.metacritic.score,
+                url: gameDetails.metacritic.url,
+            },
+        });
+    }, [ game.appId, gameDetails]);
+
+    useEffect(() => {
         setNotesDraft(game.custom_notes);
     }, [game.appId, game.custom_notes]);
 
@@ -64,6 +80,7 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
 
     const handleNotesSave = () => {
         addCustomNotes(game.appId, notesDraft.trim());
+        setNotesDraft("");
     };
 
     return <DialogRoot open={open} onOpenChange={handleOpenChange} size={"cover"} placement={"center"}>
@@ -87,7 +104,7 @@ export const GameDetailDialog = ({ game, open, handleOpenChange }: GameDetailDia
                             </Text>
                         ) : isFetching ? (
                             <Box minH="320px" display="flex" alignItems="center" justifyContent="center">
-                                <Spinner size="xl" />
+                                <Spinner color={steamColors.textPrimary} size="xl" />
                             </Box>
                         ) : (
                             <VStack align="stretch" gap={4}>

@@ -48,7 +48,7 @@ export async function getGameDetails(appId: number): Promise<GameDetailsType> {
                 description: genre.description,
             })) ?? [],
             categories: gameData.categories?.map((category) => ({
-                id: category.id.toString(),
+                id: category.id,
                 description: category.description,
             })) ?? [],
             about_the_game: gameData.about_the_game ?? "",

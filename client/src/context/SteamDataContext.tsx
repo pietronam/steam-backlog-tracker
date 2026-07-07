@@ -16,6 +16,8 @@ import {
   initialSteamDataState,
   steamDataReducer,
 } from "./steamDataReducer";
+import { DEFAULT_GENRES } from "../utils/default_genres";
+import type { GameSummaryType } from "../types/gameSummaryType";
 
 const STORAGE_KEY = "steamDataState";
 
@@ -23,12 +25,29 @@ const STORAGE_KEY = "steamDataState";
 
 type SteamDataActions = {
   setSteamUser: (user: UserType) => void;
-  setSession: (user: UserType, games: GameType[]) => void;
+  login: (user: UserType, games: GameType[]) => void;
+  setSession: (
+    user: UserType,
+    games: GameType[],
+    genreMap: Record<number, string>,
+    categoryMap: Record<number, string>,
+  ) => void;
   addGames: (games: GameType[]) => void;
   removeGames: (appIds: number[]) => void;
+  addLookups: (
+    genres?: {
+      id: string;
+      description: string;
+    }[],
+    categories?: {
+      id: number;
+      description: string;
+    }[],
+  ) => void;
   addCustomTag: (appId: number, tag: string) => void;
   removeCustomTag: (appId: number, tag: string) => void;
   addCustomNotes: (appId: number, notes: string) => void;
+  updateGameSummary: (appId: number, summary: GameSummaryType) => void;
   changeGameStatus: (
     appId: number,
     status: GameType["status"],
@@ -67,6 +86,8 @@ function loadFromStorage(): SteamDataState {
         ...parsed.user,
       },
       games: parsed.games,
+      genreMap: parsed.genreMap ?? DEFAULT_GENRES,
+      categoryMap: parsed.categoryMap ?? {},
     };
   } catch {
     return initialSteamDataState;
@@ -112,11 +133,31 @@ export function SteamDataProvider({
     });
   }, []);
 
+  const login = useCallback((user: UserType, games: GameType[]) => {
+    dispatch({
+      type: "LOGIN",
+      payload: {
+        user,
+        games,
+      }
+    })
+  }, []);
+
   const setSession = useCallback(
-    (user: UserType, games: GameType[]) => {
+    (
+      user: UserType,
+      games: GameType[],
+      genreMap: Record<number, string>,
+      categoryMap: Record<number, string>,
+    ) => {
       dispatch({
         type: "SET_SESSION",
-        payload: { user, games },
+        payload: {
+          user,
+          games,
+          genreMap,
+          categoryMap,
+        },
       });
     },
     [],
@@ -135,6 +176,28 @@ export function SteamDataProvider({
       payload: appIds,
     });
   }, []);
+
+  const addLookups = useCallback(
+    (
+      genres?: {
+        id: string;
+        description: string;
+      }[],
+      categories?: {
+        id: number;
+        description: string;
+      }[],
+    ) => {
+      dispatch({
+        type: "ADD_LOOKUPS",
+        payload: {
+          genres,
+          categories,
+        },
+      });
+    },
+    [],
+  );
 
   const addCustomTag = useCallback(
     (appId: number, tag: string) => {
@@ -166,6 +229,17 @@ export function SteamDataProvider({
     [],
   );
 
+  const updateGameSummary = useCallback(
+    (
+      appId: number,
+      summary: GameSummaryType
+    ) => {
+      dispatch({
+        type: "UPDATE_GAME_SUMMARY",
+        payload: { appId, summary }
+      })
+    }, []);
+
   const changeGameStatus = useCallback(
     (
       appId: number,
@@ -190,12 +264,15 @@ export function SteamDataProvider({
   const actions = useMemo(
     () => ({
       setSteamUser,
+      login,
       setSession,
       addGames,
       removeGames,
+      addLookups,
       addCustomTag,
       removeCustomTag,
       addCustomNotes,
+      updateGameSummary,
       changeGameStatus,
       clearData,
     }),
@@ -204,6 +281,7 @@ export function SteamDataProvider({
       setSession,
       addGames,
       removeGames,
+      addLookups,
       addCustomTag,
       removeCustomTag,
       addCustomNotes,

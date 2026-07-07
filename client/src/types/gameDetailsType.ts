@@ -5,7 +5,7 @@ export type GameDetailsType = {
         description: string,
     }[],
     categories: {
-        id: string,
+        id: number,
         description: string,
     }[]
     about_the_game: string,

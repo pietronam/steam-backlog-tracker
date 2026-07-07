@@ -3,5 +3,8 @@ import type { UserType } from "./userType"
 
 export interface SteamDataState {
     user: UserType,
-    games: GameType[]
+    games: GameType[],
+
+    genreMap: Record<number, string>
+    categoryMap: Record<number, string>
 }

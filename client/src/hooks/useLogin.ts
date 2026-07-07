@@ -4,7 +4,7 @@ import { useSteamDataActions } from "../context/SteamDataContext"
 import type { UserType } from "../types/userType"
 
 export const useLogin = () => {
-    const { setSession } = useSteamDataActions()
+    const { login } = useSteamDataActions();
 
     return useMutation({
         mutationFn: async (user: UserType) => {
@@ -17,7 +17,7 @@ export const useLogin = () => {
         },
 
         onSuccess: ({ user, games }) => {
-            setSession(user, games)
+            login(user, games)
         },
     })
 }
