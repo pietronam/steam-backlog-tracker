@@ -17,7 +17,7 @@ export const GameDetailTags = ({game, gameDetails}: GameDetailTagsProps) => {
     const statusOptions: Array<{ label: string; status: GameType["status"] }> = [
         { label: "Add to backlog", status: "backlog" },
         { label: "Mark completed", status: "completed" },
-        { label: "Mark untracked", status: "untracked" },
+        { label: "Stop tracking", status: "untracked" },
     ];
     const visibleStatusOptions = statusOptions.filter(({ status }) => status !== game.status);
         const handleStatusChange = (status: GameType["status"]) => {

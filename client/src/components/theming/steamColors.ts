@@ -3,6 +3,7 @@ export const steamColors = {
     panel: "#16202d",
     elevated: "#22384d",
     surface: "#2a475e",
+    header: "#171d25",
 
     border: "#3a5066",
 

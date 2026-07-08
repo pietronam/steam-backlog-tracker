@@ -1,13 +1,19 @@
 import {
     Box,
     Button,
+    HStack,
+    Icon,
     Image,
-    Text,
-    VStack
+    Text
 } from "@chakra-ui/react"
+import { memo } from "react"
+import { FaClipboardList } from "react-icons/fa"
+import { IoIosCheckbox } from "react-icons/io"
+import { IoLibrary } from "react-icons/io5"
 import { useSteamDataActions } from "../context/SteamDataContext"
 import type { GameType } from "../types/gameType"
-import { memo } from "react"
+import { steamButtons } from "./theming/steamButtons"
+import placeholderImage from "../assets/steam_placeholder_image.jpg";
 
 const getCoverImageUrl = (appId: number) =>
     `https://shared.steamstatic.com/store_item_assets/steam/apps/${appId}/library_600x900.jpg`
@@ -63,6 +69,9 @@ const GameCardComponent = ({ game, onOpen }: GameCardProps) => {
             <Image
                 src={coverImageUrl}
                 alt={`${game.name} cover`}
+                onError={(e) => {
+                    e.currentTarget.src = placeholderImage;
+                }}
                 loading="lazy"
                 objectFit="cover"
                 w="100%"
@@ -101,8 +110,8 @@ const GameCardComponent = ({ game, onOpen }: GameCardProps) => {
                     {game.name}
                 </Text>
 
-                <VStack>
-                    <Button size="md" flex={1} onClick={(e) => {
+                <HStack>
+                    <Button css={steamButtons.secondaryButton} size="md" flex={1} onClick={(e) => {
                         e.stopPropagation()
                         if (game.status === "backlog") {
                             handleStatusChange("untracked")
@@ -110,10 +119,10 @@ const GameCardComponent = ({ game, onOpen }: GameCardProps) => {
                             handleStatusChange("backlog")
                         }
                     }}>
-                        {game.status === "backlog" ? "Remove from\nbacklog" : "Backlog"}
+                        <Icon>{game.status === "backlog" ? <IoLibrary /> : <FaClipboardList />}</Icon>
                     </Button>
 
-                    <Button size="md" flex={1} onClick={(e) => {
+                    <Button css={steamButtons.secondaryButton} size="md" flex={1} onClick={(e) => {
                         e.stopPropagation()
                         if (game.status === "completed") {
                             handleStatusChange("untracked")
@@ -121,9 +130,9 @@ const GameCardComponent = ({ game, onOpen }: GameCardProps) => {
                             handleStatusChange("completed")
                         }
                     }}>
-                        {game.status === "completed" ? "Unmark\ncompleted" : "Completed"}
+                        <Icon>{game.status === "completed" ? <IoLibrary /> : <IoIosCheckbox />}</Icon>
                     </Button>
-                </VStack>
+                </HStack>
             </Box>
         </Box>
     )
