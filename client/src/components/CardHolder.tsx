@@ -71,7 +71,7 @@ export const CardHolder = ({ games }: CardHolderProps) => {
                 </Text>
             )}
 
-            {game && open && <GameDetailDialog game={game} open={open} handleOpenChange={handleOpenChange} />}
+            {game && open && <GameDetailDialog appId={game.appId} open={open} handleOpenChange={handleOpenChange} />}
         </Box>
     )
 }
