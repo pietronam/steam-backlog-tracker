@@ -1,11 +1,11 @@
 import { Box, Button, Flex, Text, Textarea, VStack } from "@chakra-ui/react"
-import { steamText } from "../theming/steamText"
-import type { GameType } from "../../types/gameType"
-import type { GameDetailsType } from "../../types/gameDetailsType"
-import { steamMisc } from "../theming/steamMisc"
+import { steamText } from "../../theming/steamText"
+import type { GameType } from "../../../types/gameType"
+import type { GameDetailsType } from "../../../types/gameDetailsType"
+import { steamMisc } from "../../theming/steamMisc"
 import { useEffect, useState } from "react"
-import { useSteamDataActions } from "../../context/SteamDataContext"
-import { steamButtons } from "../theming/steamButtons"
+import { useSteamDataActions } from "../../../context/SteamDataContext"
+import { steamButtons } from "../../theming/steamButtons"
 
 type GameDetailTagsProps = {
     game: GameType

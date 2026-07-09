@@ -1,8 +1,8 @@
 import { DialogDescription, DialogHeader, DialogTitle, Flex, Image, Text } from "@chakra-ui/react"
-import { steamText } from "../theming/steamText"
-import { sanitizeSteamDescription } from "../../utils/sanitizeSteamDescriptions"
-import type { GameType } from "../../types/gameType"
-import type { GameDetailsType } from "../../types/gameDetailsType"
+import { steamText } from "../../theming/steamText"
+import { sanitizeSteamDescription } from "../../../utils/sanitizeSteamDescriptions"
+import type { GameType } from "../../../types/gameType"
+import type { GameDetailsType } from "../../../types/gameDetailsType"
 
 type GameDetailsHeaderProps = {
     game: GameType,

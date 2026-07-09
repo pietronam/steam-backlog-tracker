@@ -2,9 +2,9 @@ import { Box, CloseButton, DialogBackdrop, DialogBody, DialogCloseTrigger, Dialo
 import { useEffect } from "react";
 import { useSteamDataActions, useSteamDataState } from "../context/SteamDataContext";
 import { useGameDetails } from "../hooks/useGameDetails";
-import { GameDetailHeader } from "./detail_dialog_components/GameDetailHeader";
-import { GameDetailInfosection } from "./detail_dialog_components/GameDetailInfoSection";
-import { GameDetailTags } from "./detail_dialog_components/GameDetailTags";
+import { GameDetailHeader } from "./sub_components/detail_dialog/GameDetailHeader";
+import { GameDetailInfosection } from "./sub_components/detail_dialog/GameDetailInfoSection";
+import { GameDetailTags } from "./sub_components/detail_dialog/GameDetailTags";
 import { steamColors } from "./theming/steamColors";
 import { steamLayout } from "./theming/steamLayout";
 import { steamText } from "./theming/steamText";

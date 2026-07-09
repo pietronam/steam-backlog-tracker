@@ -1,10 +1,10 @@
 import { Badge, Box, Button, CloseButton, HStack, Input } from "@chakra-ui/react";
 import { useState } from "react";
-import type { GameType } from "../../types/gameType";
-import { steamButtons } from "../theming/steamButtons";
-import { useSteamDataActions } from "../../context/SteamDataContext";
-import { steamMisc } from "../theming/steamMisc";
-import type { GameDetailsType } from "../../types/gameDetailsType";
+import type { GameType } from "../../../types/gameType";
+import { steamButtons } from "../../theming/steamButtons";
+import { useSteamDataActions } from "../../../context/SteamDataContext";
+import { steamMisc } from "../../theming/steamMisc";
+import type { GameDetailsType } from "../../../types/gameDetailsType";
 
 type GameDetailTagsProps = {
     game: GameType

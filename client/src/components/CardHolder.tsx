@@ -1,9 +1,10 @@
-import type { DialogOpenChangeDetails } from "@chakra-ui/react"
 import {
     Box,
+    Button,
     Grid,
     Input,
-    Text
+    Text,
+    type DialogOpenChangeDetails,
 } from "@chakra-ui/react"
 import {
     useCallback,
@@ -11,10 +12,14 @@ import {
     useMemo,
     useState,
 } from "react"
+import { FaFilter } from "react-icons/fa"
 
+import { useSteamDataState } from "../context/SteamDataContext"
 import type { GameType } from "../types/gameType"
+import { filterGames, type GameFilterState } from "../utils/filterGames"
 import { GameCard } from "./GameCard"
 import { GameDetailDialog } from "./GameDetailDialog"
+import { FilterDialog } from "./FilterDialog"
 import { PaginationBar } from "./PaginationBar"
 import { steamColors } from "./theming/steamColors"
 
@@ -27,6 +32,17 @@ export const CardHolder = ({ games }: CardHolderProps) => {
     const [game, setSelectedGame] = useState<GameType | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [page, setPage] = useState(1)
+    const [isFilterOpen, setIsFilterOpen] = useState(false)
+    const [activeFilters, setActiveFilters] = useState<GameFilterState>({
+        selectedGenres: [],
+        selectedCategories: [],
+        selectedDevelopers: [],
+        selectedPublishers: [],
+        selectedStatuses: [],
+        selectedTags: [],
+    })
+
+    const { genreMap, categoryMap } = useSteamDataState()
 
     const pageSize = 30
 
@@ -43,17 +59,9 @@ export const CardHolder = ({ games }: CardHolderProps) => {
         }
     }
 
-    const normalizedQuery = searchQuery.trim().toLowerCase()
-
     const filteredGames = useMemo(() => {
-        return games.filter((game) => {
-            if (!normalizedQuery) {
-                return true
-            }
-
-            return game.name.toLowerCase().includes(normalizedQuery)
-        })
-    }, [games, normalizedQuery])
+        return filterGames(games, searchQuery, activeFilters)
+    }, [games, searchQuery, activeFilters])
 
     const totalPages = Math.max(
         1,
@@ -70,7 +78,7 @@ export const CardHolder = ({ games }: CardHolderProps) => {
 
     useEffect(() => {
         setPage(1)
-    }, [normalizedQuery])
+    }, [searchQuery, activeFilters])
 
     return (
         <Box width="full" py={2}>
@@ -82,7 +90,7 @@ export const CardHolder = ({ games }: CardHolderProps) => {
                 gap={4}
                 flexWrap="wrap"
             >
-                <Box maxW="400px" flex="1" minW="280px">
+                <Box display="flex" flex="1" minW="280px" maxW="520px" gap={2}>
                     <Input
                         placeholder="Search games by name"
                         value={searchQuery}
@@ -94,6 +102,15 @@ export const CardHolder = ({ games }: CardHolderProps) => {
                         _placeholder={{ color: "gray.500" }}
                         minH="40px"
                     />
+                    <Button
+                        onClick={() => setIsFilterOpen(true)}
+                        minW="44px"
+                        bg={steamColors.surface}
+                        color={steamColors.textPrimary}
+                        _hover={{ bg: steamColors.elevated }}
+                    >
+                        <FaFilter />
+                    </Button>
                 </Box>
 
                 <PaginationBar
@@ -133,6 +150,27 @@ export const CardHolder = ({ games }: CardHolderProps) => {
                     No games match your search.
                 </Text>
             )}
+
+            <FilterDialog
+                open={isFilterOpen}
+                onOpenChange={(details) => setIsFilterOpen(details.open)}
+                filters={activeFilters}
+                onApplyFilters={setActiveFilters}
+                onClearFilters={() => setActiveFilters({
+                    selectedGenres: [],
+                    selectedCategories: [],
+                    selectedDevelopers: [],
+                    selectedPublishers: [],
+                    selectedStatuses: [],
+                    selectedTags: [],
+                })}
+                genreMap={genreMap}
+                categoryMap={categoryMap}
+                developers={Array.from(new Set(games.flatMap((game) => game.summary.developers))).sort()}
+                publishers={Array.from(new Set(games.flatMap((game) => game.summary.publishers))).sort()}
+                statuses={["backlog", "completed", "untracked"]}
+                tags={Array.from(new Set(games.flatMap((game) => game.custom_tags))).sort()}
+            />
 
             {game && open && (
                 <GameDetailDialog

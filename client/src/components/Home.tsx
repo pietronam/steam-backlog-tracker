@@ -18,7 +18,7 @@ export const Home = () => {
                 <Heading fontSize="2xl">Steam Backlog Tracker</Heading>
             </Flex>
 
-            <Flex as="main" flex={1} justifyContent="center" alignItems="center">
+            <Flex as="main" flex={1} justifyContent="center" alignItems="flex-start">
                 <GameSelector />
             </Flex>
 
