@@ -16,7 +16,7 @@ import { FaFilter } from "react-icons/fa"
 
 import { useSteamDataState } from "../context/SteamDataContext"
 import type { GameType } from "../types/gameType"
-import { filterGames, type GameFilterState } from "../utils/filterGames"
+import { filterGames, type GameFilterState } from "../functions/filterGames"
 import { GameCard } from "./GameCard"
 import { GameDetailDialog } from "./GameDetailDialog"
 import { FilterDialog } from "./FilterDialog"
