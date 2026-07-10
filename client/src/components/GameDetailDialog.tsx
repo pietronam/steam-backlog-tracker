@@ -22,21 +22,21 @@ export const GameDetailDialog = ({ appId, open, handleOpenChange }: GameDetailDi
     if (!game) return null;
 
     const { data: gameDetails, isFetching, isError, error } = useGameDetails(game.appId);
-    const { addLookups, updateGameSummary } = useSteamDataActions();
+    const { addLookups, updateGameMetadata } = useSteamDataActions();
 
     useEffect(() => {
         if (!gameDetails) return;
 
-        addLookups(gameDetails.genres, gameDetails.categories);
-        updateGameSummary(game.appId, {
-            genreIds: gameDetails.genres.map((genre) => Number(genre.id)),
-            categoryIds: gameDetails.categories.map((category) => category.id),
+        addLookups(gameDetails.developers, gameDetails.publishers, gameDetails.genres, gameDetails.categories);
+        updateGameMetadata(game.appId, {
+            name: game.name,
+            customNotes: game.custom_notes,
+            customTags: game.custom_tags,
+            status: game.status,
+            genres: gameDetails.genres,
+            categories: gameDetails.categories,
             developers: gameDetails.developers,
             publishers: gameDetails.publishers,
-            metacritic: {
-                score: gameDetails.metacritic.score,
-                url: gameDetails.metacritic.url,
-            },
         });
     }, [game.appId, gameDetails]);
 

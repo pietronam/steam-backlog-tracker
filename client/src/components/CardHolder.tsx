@@ -42,7 +42,7 @@ export const CardHolder = ({ games }: CardHolderProps) => {
         selectedTags: [],
     })
 
-    const { genreMap, categoryMap } = useSteamDataState()
+    const { genreMap, categoryMap, publishers, developers } = useSteamDataState()
 
     const pageSize = 30
 
@@ -60,7 +60,7 @@ export const CardHolder = ({ games }: CardHolderProps) => {
     }
 
     const filteredGames = useMemo(() => {
-        return filterGames(games, searchQuery, activeFilters)
+        return filterGames(games, searchQuery, activeFilters, genreMap, categoryMap)
     }, [games, searchQuery, activeFilters])
 
     const totalPages = Math.max(
@@ -166,8 +166,8 @@ export const CardHolder = ({ games }: CardHolderProps) => {
                 })}
                 genreMap={genreMap}
                 categoryMap={categoryMap}
-                developers={Array.from(new Set(games.flatMap((game) => game.summary.developers))).sort()}
-                publishers={Array.from(new Set(games.flatMap((game) => game.summary.publishers))).sort()}
+                developers={developers}
+                publishers={publishers}
                 statuses={["backlog", "completed", "untracked"]}
                 tags={Array.from(new Set(games.flatMap((game) => game.custom_tags))).sort()}
             />

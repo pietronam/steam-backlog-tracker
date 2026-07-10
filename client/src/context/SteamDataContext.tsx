@@ -16,44 +16,11 @@ import {
   initialSteamDataState,
   steamDataReducer,
 } from "./steamDataReducer";
-import { DEFAULT_GENRES } from "../utils/default_genres";
-import type { GameSummaryType } from "../types/gameSummaryType";
+import { DEFAULT_GENRES } from "../utils/defaultGenres";
+import type { GameMetadataType } from "../types/gameMetadataType";
+import type { SteamDataActions } from "../types/steamDataActions";
 
 const STORAGE_KEY = "steamDataState";
-
-/* -------------------- Types -------------------- */
-
-type SteamDataActions = {
-  setSteamUser: (user: UserType) => void;
-  login: (user: UserType, games: GameType[]) => void;
-  setSession: (
-    user: UserType,
-    games: GameType[],
-    genreMap: Record<number, string>,
-    categoryMap: Record<number, string>,
-  ) => void;
-  addGames: (games: GameType[]) => void;
-  removeGames: (appIds: number[]) => void;
-  addLookups: (
-    genres?: {
-      id: string;
-      description: string;
-    }[],
-    categories?: {
-      id: number;
-      description: string;
-    }[],
-  ) => void;
-  addCustomTag: (appId: number, tag: string) => void;
-  removeCustomTag: (appId: number, tag: string) => void;
-  addCustomNotes: (appId: number, notes: string) => void;
-  updateGameSummary: (appId: number, summary: GameSummaryType) => void;
-  changeGameStatus: (
-    appId: number,
-    status: GameType["status"],
-  ) => void;
-  clearData: () => void;
-};
 
 /* -------------------- Contexts -------------------- */
 
@@ -88,6 +55,8 @@ function loadFromStorage(): SteamDataState {
       games: parsed.games,
       genreMap: parsed.genreMap ?? DEFAULT_GENRES,
       categoryMap: parsed.categoryMap ?? {},
+      developers: parsed.developers ?? [],
+      publishers: parsed.publishers ?? [],
     };
   } catch {
     return initialSteamDataState;
@@ -149,6 +118,8 @@ export function SteamDataProvider({
       games: GameType[],
       genreMap: Record<number, string>,
       categoryMap: Record<number, string>,
+      developers: string[],
+      publishers: string[]
     ) => {
       dispatch({
         type: "SET_SESSION",
@@ -157,6 +128,8 @@ export function SteamDataProvider({
           games,
           genreMap,
           categoryMap,
+          developers,
+          publishers,
         },
       });
     },
@@ -179,6 +152,8 @@ export function SteamDataProvider({
 
   const addLookups = useCallback(
     (
+      developers: string[],
+      publishers: string[],
       genres?: {
         id: string;
         description: string;
@@ -193,6 +168,8 @@ export function SteamDataProvider({
         payload: {
           genres,
           categories,
+          developers,
+          publishers
         },
       });
     },
@@ -229,14 +206,14 @@ export function SteamDataProvider({
     [],
   );
 
-  const updateGameSummary = useCallback(
+  const updateGameMetadata = useCallback(
     (
       appId: number,
-      summary: GameSummaryType
+      metadata: GameMetadataType
     ) => {
       dispatch({
-        type: "UPDATE_GAME_SUMMARY",
-        payload: { appId, summary }
+        type: "UPDATE_GAME_METADATA",
+        payload: { appId, metadata }
       })
     }, []);
 
@@ -272,7 +249,7 @@ export function SteamDataProvider({
       addCustomTag,
       removeCustomTag,
       addCustomNotes,
-      updateGameSummary,
+      updateGameMetadata,
       changeGameStatus,
       clearData,
     }),

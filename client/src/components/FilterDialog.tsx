@@ -11,9 +11,10 @@ import {
     DialogPositioner,
     DialogRoot,
     Portal,
+    Icon,
     Text,
     VStack,
-    type DialogOpenChangeDetails
+    type DialogOpenChangeDetails,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import type { GameType } from "../types/gameType";
@@ -23,6 +24,9 @@ import { steamColors } from "./theming/steamColors";
 import { steamLayout } from "./theming/steamLayout";
 import { steamText } from "./theming/steamText";
 import { FilterAccordionItem } from "./sub_components/filter_dialog/FilterAccordionItem";
+import { useSteamDataState } from "../context/SteamDataContext";
+import { FiAlertTriangle } from "react-icons/fi";
+import { SearchableCheckboxSection } from "./sub_components/filter_dialog/SearchableCheckboxSection";
 
 type FilterDialogProps = {
     open: boolean;
@@ -60,6 +64,9 @@ export const FilterDialog = ({
     statuses,
     tags,
 }: FilterDialogProps) => {
+    const { games } = useSteamDataState();
+    const gamesToIndex = games.filter((game) => !game.searchIndex);
+
     const [draftFilters, setDraftFilters] = useState<GameFilterState>(filters);
 
     useEffect(() => {
@@ -76,26 +83,13 @@ export const FilterDialog = ({
         [categoryMap],
     );
 
-    const genreValues = useMemo(
-        () => genreEntries.map(([id]) => Number(id)),
-        [genreEntries]
-    );
+    const genreValues = useMemo(() => genreEntries.map(([id]) => Number(id)), [genreEntries]);
 
-    const genreLabels = useMemo(
-        () => Object.fromEntries(genreEntries),
-        [genreEntries]
-    );
+    const genreLabels = useMemo(() => Object.fromEntries(genreEntries), [genreEntries]);
 
-    const categoryValues = useMemo(
-        () => categoryEntries.map(([id]) => Number(id)),
-        [categoryEntries]
-    );
+    const categoryValues = useMemo(() => categoryEntries.map(([id]) => Number(id)), [categoryEntries]);
 
-    const categoryLabels = useMemo(
-        () => Object.fromEntries(categoryEntries),
-        [categoryEntries]
-    );
-
+    const categoryLabels = useMemo(() => Object.fromEntries(categoryEntries), [categoryEntries]);
 
     const handleApply = () => {
         onApplyFilters(draftFilters);
@@ -107,7 +101,6 @@ export const FilterDialog = ({
         onClearFilters();
         onOpenChange({ open: false });
     };
-
 
     return (
         <DialogRoot open={open} onOpenChange={onOpenChange} size="lg" placement="center">
@@ -125,15 +118,28 @@ export const FilterDialog = ({
                                         <CloseButton color={steamColors.textPrimary} bgColor="transparent" />
                                     </DialogCloseTrigger>
                                 </Box>
-                                <AccordionRoot
-                                    multiple={false}
-                                    collapsible
-                                    lazyMount
-                                >
-                                    <FilterAccordionItem
-                                        value="statuses"
-                                        title="Statuses"
+
+                                {gamesToIndex.length > 0 && (
+                                    <Box
+                                        display="flex"
+                                        gap={3}
+                                        alignItems="flex-start"
+                                        border={`1px solid ${steamColors.border}`}
+                                        bg="rgba(255,0,0,0.06)"
+                                        p={3}
+                                        borderRadius="md"
                                     >
+                                        <Icon as={FiAlertTriangle} color="red.400" mt="4px" boxSize={5} />
+                                        <Text color={steamColors.textPrimary} fontSize="sm">
+                                            Some or all games in your library are missing important metadata. Filtering will not work
+                                            correctly until all your games have been indexed. To index your games, click the button on the top
+                                            right.
+                                        </Text>
+                                    </Box>
+                                )}
+
+                                <AccordionRoot multiple={false} collapsible lazyMount>
+                                    <FilterAccordionItem value="statuses" title="Statuses">
                                         <CheckboxSection
                                             values={statuses}
                                             selectedValues={draftFilters.selectedStatuses}
@@ -142,10 +148,7 @@ export const FilterDialog = ({
                                         />
                                     </FilterAccordionItem>
 
-                                    <FilterAccordionItem
-                                        value="genres"
-                                        title="Genres"
-                                    >
+                                    <FilterAccordionItem value="genres" title="Genres">
                                         <CheckboxSection
                                             values={genreValues}
                                             labels={genreLabels}
@@ -155,10 +158,7 @@ export const FilterDialog = ({
                                         />
                                     </FilterAccordionItem>
 
-                                    <FilterAccordionItem
-                                        value="categories"
-                                        title="Categories"
-                                    >
+                                    <FilterAccordionItem value="categories" title="Categories">
                                         <CheckboxSection
                                             values={categoryValues}
                                             labels={categoryLabels}
@@ -172,7 +172,7 @@ export const FilterDialog = ({
                                         value="developers"
                                         title="Developers"
                                     >
-                                        <CheckboxSection
+                                        <SearchableCheckboxSection
                                             values={developers}
                                             selectedValues={draftFilters.selectedDevelopers}
                                             keyName="selectedDevelopers"
@@ -184,7 +184,7 @@ export const FilterDialog = ({
                                         value="publishers"
                                         title="Publishers"
                                     >
-                                        <CheckboxSection
+                                        <SearchableCheckboxSection
                                             values={publishers}
                                             selectedValues={draftFilters.selectedPublishers}
                                             keyName="selectedPublishers"
@@ -192,10 +192,25 @@ export const FilterDialog = ({
                                         />
                                     </FilterAccordionItem>
 
-                                    <FilterAccordionItem
-                                        value="tags"
-                                        title="Custom tags"
-                                    >
+                                    {/* <FilterAccordionItem value="developers" title="Developers">
+                                        <CheckboxSection
+                                            values={developers}
+                                            selectedValues={draftFilters.selectedDevelopers}
+                                            keyName="selectedDevelopers"
+                                            setDraftFilters={setDraftFilters}
+                                        />
+                                    </FilterAccordionItem>
+
+                                    <FilterAccordionItem value="publishers" title="Publishers">
+                                        <CheckboxSection
+                                            values={publishers}
+                                            selectedValues={draftFilters.selectedPublishers}
+                                            keyName="selectedPublishers"
+                                            setDraftFilters={setDraftFilters}
+                                        />
+                                    </FilterAccordionItem> */}
+
+                                    <FilterAccordionItem value="tags" title="Custom tags">
                                         <CheckboxSection
                                             values={tags}
                                             selectedValues={draftFilters.selectedTags}
@@ -203,24 +218,15 @@ export const FilterDialog = ({
                                             setDraftFilters={setDraftFilters}
                                         />
                                     </FilterAccordionItem>
-                                </AccordionRoot>                            </VStack>
+                                </AccordionRoot>
+                            </VStack>
                         </DialogBody>
 
                         <DialogFooter>
-                            <Button
-                                variant="outline"
-                                borderColor={steamColors.border}
-                                color={steamColors.textPrimary}
-                                onClick={handleClear}
-                            >
+                            <Button variant="outline" borderColor={steamColors.border} color={steamColors.textPrimary} onClick={handleClear}>
                                 Clear
                             </Button>
-                            <Button
-                                bg={steamColors.blue}
-                                color={steamColors.background}
-                                _hover={{ bg: steamColors.blueHover }}
-                                onClick={handleApply}
-                            >
+                            <Button bg={steamColors.blue} color={steamColors.background} _hover={{ bg: steamColors.blueHover }} onClick={handleApply}>
                                 Apply filters
                             </Button>
                         </DialogFooter>

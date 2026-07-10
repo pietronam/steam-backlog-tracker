@@ -1,8 +1,11 @@
 import type { SteamDataState } from "../types/steamDataState";
 import type { GameType } from "../types/gameType";
 import type { UserType } from "../types/userType";
-import { DEFAULT_GENRES } from "../utils/default_genres";
-import type { GameSummaryType } from "../types/gameSummaryType";
+import { DEFAULT_GENRES } from "../utils/defaultGenres";
+import type { GameMetadataType } from "../types/gameMetadataType";
+import { buildSearchIndex } from "../utils/buildSearchIndex";
+import { appendToSearchIndex } from "../utils/appendToSearchIndex";
+import { removeFromSearchIndex } from "../utils/removeFromSearchIndex";
 
 export type SteamDataAction =
   | { type: "SET_STEAM_USER"; payload: UserType }
@@ -15,6 +18,8 @@ export type SteamDataAction =
       games: GameType[];
       genreMap: Record<number, string>;
       categoryMap: Record<number, string>;
+      developers: string[],
+      publishers: string[],
     };
   }
 
@@ -31,6 +36,8 @@ export type SteamDataAction =
         id: number;
         description: string;
       }[];
+      developers: string[]
+      publishers: string[]
     };
   }
   | { type: "ADD_CUSTOM_TAG"; payload: { appId: number; tag: string } }
@@ -40,10 +47,10 @@ export type SteamDataAction =
     payload: { appId: number; notes: string };
   }
   | {
-    type: "UPDATE_GAME_SUMMARY";
+    type: "UPDATE_GAME_METADATA";
     payload: {
       appId: number;
-      summary: GameSummaryType;
+      metadata: GameMetadataType;
     };
   }
   | {
@@ -67,6 +74,8 @@ export const initialSteamDataState: SteamDataState = {
   games: [],
   genreMap: DEFAULT_GENRES,
   categoryMap: {},
+  developers: [],
+  publishers: [],
 };
 
 export function steamDataReducer(
@@ -93,6 +102,8 @@ export function steamDataReducer(
         games: action.payload.games,
         genreMap: action.payload.genreMap,
         categoryMap: action.payload.categoryMap,
+        developers: action.payload.developers,
+        publishers: action.payload.publishers
       };
 
     case "ADD_GAMES": {
@@ -125,6 +136,8 @@ export function steamDataReducer(
     case "ADD_LOOKUPS": {
       const genreMap = { ...state.genreMap };
       const categoryMap = { ...state.categoryMap };
+      const developers = [...state.developers];
+      const publishers = [...state.publishers];
 
       action.payload.genres?.forEach((genre) => {
         genreMap[Number(genre.id)] = genre.description;
@@ -134,10 +147,24 @@ export function steamDataReducer(
         categoryMap[category.id] = category.description;
       });
 
+      action.payload.developers?.forEach((developer) => {
+        if (!developers.includes(developer)) {
+          developers.push(developer);
+        }
+      });
+
+      action.payload.publishers?.forEach((publisher) => {
+        if (!publishers.includes(publisher)) {
+          publishers.push(publisher);
+        }
+      });
+
       return {
         ...state,
         genreMap,
         categoryMap,
+        developers,
+        publishers,
       };
     }
 
@@ -146,16 +173,21 @@ export function steamDataReducer(
 
       return {
         ...state,
-        games: state.games.map((g) =>
-          g.appId === appId
-            ? {
-              ...g,
-              custom_tags: Array.from(
-                new Set([...g.custom_tags, tag]),
-              ),
-            }
-            : g,
-        ),
+        games: state.games.map((g) => {
+          if (g.appId !== appId) return g;
+          if (g.searchIndex) return {
+            ...g,
+            custom_tags: Array.from(
+              new Set([...g.custom_tags, tag])),
+            searchIndex: appendToSearchIndex(g.searchIndex, tag)
+          };
+          return {
+            ...g,
+            custom_tags: Array.from(
+              new Set([...g.custom_tags, tag]),
+            ),
+          }
+        }),
       };
     }
 
@@ -164,16 +196,22 @@ export function steamDataReducer(
 
       return {
         ...state,
-        games: state.games.map((g) =>
-          g.appId === appId
-            ? {
-              ...g,
-              custom_tags: g.custom_tags.filter(
-                (t) => t !== tag,
-              ),
-            }
-            : g,
-        ),
+        games: state.games.map((g) => {
+          if (g.appId !== appId) return g;
+          if (g.searchIndex) return {
+            ...g,
+            custom_tags: g.custom_tags.filter(
+              (t) => t !== tag,
+            ),
+            searchIndex: removeFromSearchIndex(g.searchIndex, tag)
+          };
+          return {
+            ...g,
+            custom_tags: g.custom_tags.filter(
+              (t) => t !== tag,
+            ),
+          }
+        }),
       };
     }
 
@@ -182,46 +220,66 @@ export function steamDataReducer(
 
       return {
         ...state,
-        games: state.games.map((g) =>
-          g.appId === appId
-            ? {
-              ...g,
-              custom_notes: notes,
-            }
-            : g,
-        ),
+        games: state.games.map((g) => {
+          if (g.appId !== appId) return g;
+          if (g.searchIndex) return {
+            ...g,
+            custom_notes: notes,
+            searchIndex: appendToSearchIndex(g.searchIndex, notes)
+          };
+          return {
+            ...g,
+            custom_notes: notes,
+          }
+        }),
       };
     }
 
-    case "UPDATE_GAME_SUMMARY": {
-      const { appId, summary } = action.payload;
+    case "UPDATE_GAME_METADATA": {
+      const { appId, metadata } = action.payload;
 
       return {
         ...state,
-        games: state.games.map((game) =>
-          game.appId === appId
-            ? {
-              ...game,
-              summary,
-            }
-            : game
-        ),
+        games: state.games.map((game) => {
+          if (game.appId !== appId) return game;
+
+          return {
+            ...game,
+            searchIndex: buildSearchIndex({
+              name: game.name,
+              genres: metadata.genres.map(
+                (g) => state.genreMap[Number(g.id)] ?? g.description,
+              ),
+              categories: metadata.categories.map(
+                (c) => state.categoryMap[c.id] ?? c.description,
+              ),
+              developers: metadata.developers,
+              publishers: metadata.publishers,
+              status: game.status,
+              customTags: game.custom_tags,
+              customNotes: game.custom_notes,
+            }),
+          };
+        }),
       };
     }
-
     case "CHANGE_GAME_STATUS": {
       const { appId, status } = action.payload;
 
       return {
         ...state,
-        games: state.games.map((g) =>
-          g.appId === appId
-            ? {
-              ...g,
-              status,
-            }
-            : g,
-        ),
+        games: state.games.map((g) => {
+          if (g.appId !== appId) return g;
+          if (g.searchIndex) return {
+            ...g,
+            status,
+            searchIndex: appendToSearchIndex(g.searchIndex, status)
+          };
+          return {
+            ...g,
+            status,
+          }
+        }),
       };
     }
 

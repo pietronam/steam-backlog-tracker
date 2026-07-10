@@ -7,4 +7,6 @@ export interface SteamDataState {
 
     genreMap: Record<number, string>
     categoryMap: Record<number, string>
+    developers: string[],
+    publishers: string[],
 }

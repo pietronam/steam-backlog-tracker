@@ -13,55 +13,31 @@ export function filterGames(
   games: GameType[],
   query: string,
   filters: GameFilterState,
+  genreMap: Record<number, string>,
+  categoryMap: Record<number, string>,
 ): GameType[] {
   const normalizedQuery = query.trim().toLowerCase();
 
   return games.filter((game) => {
+    const searchIndex =
+      game.searchIndex ?? game.name.toLowerCase();
     const matchesText =
-      !normalizedQuery ||
-      game.name.toLowerCase().includes(normalizedQuery);
+      normalizedQuery === "" || searchIndex.includes(normalizedQuery);
 
-    const matchesGenres =
-      filters.selectedGenres.length === 0 ||
-      filters.selectedGenres.some((genreId) =>
-        game.summary.genreIds.includes(genreId),
-      );
-
-    const matchesCategories =
-      filters.selectedCategories.length === 0 ||
-      filters.selectedCategories.some((categoryId) =>
-        game.summary.categoryIds.includes(categoryId),
-      );
-
-    const matchesDevelopers =
-      filters.selectedDevelopers.length === 0 ||
-      filters.selectedDevelopers.some((developer) =>
-        game.summary.developers.some((item) => item.toLowerCase() === developer.toLowerCase()),
-      );
-
-    const matchesPublishers =
-      filters.selectedPublishers.length === 0 ||
-      filters.selectedPublishers.some((publisher) =>
-        game.summary.publishers.some((item) => item.toLowerCase() === publisher.toLowerCase()),
-      );
-
-    const matchesStatuses =
-      filters.selectedStatuses.length === 0 ||
-      filters.selectedStatuses.includes(game.status);
-
-    const matchesTags =
-      filters.selectedTags.length === 0 ||
-      filters.selectedTags.every((tag) =>
-        game.custom_tags.some((item) => item.toLowerCase() === tag.toLowerCase()),
-      );
+    const metadataTerms = [
+      ...filters.selectedGenres.map((id) => genreMap[Number(id)]),
+      ...filters.selectedCategories.map((id) => categoryMap[id]),
+      ...filters.selectedDevelopers,
+      ...filters.selectedPublishers,
+      ...filters.selectedStatuses,
+      ...filters.selectedTags,
+    ].filter((value): value is string => Boolean(value));
 
     const matchesMetadata =
-      matchesGenres &&
-      matchesCategories &&
-      matchesDevelopers &&
-      matchesPublishers &&
-      matchesStatuses &&
-      matchesTags;
+      metadataTerms.length === 0 ||
+      metadataTerms.every((term) =>
+        searchIndex.includes(term.toLowerCase()),
+      );
 
     return matchesText && matchesMetadata;
   });
