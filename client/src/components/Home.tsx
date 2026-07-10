@@ -14,8 +14,8 @@ export const Home = () => {
 
     return (
         <Flex css={defaultStyle} direction="column" minH="100vh">
-            <Flex position={"fixed"} w={"100vw"} bgColor={steamColors.header} as="header" gap={3} px={12} py={6} alignItems="center" justifyContent={"space-between"} zIndex={2}>
-                <Flex>
+            <Flex position={"fixed"} w={"100vw"} bgColor={steamColors.header} as="header" gap={3} px={12} py={6} alignItems="center" justifyContent={"space-between"} zIndex={11}>
+                <Flex gap={2} justifyContent={"center"}>
                     <Icon size={"2xl"}><FaSteam /></Icon>
                     <Heading fontSize="2xl">Steam Backlog Tracker</Heading>
                 </Flex>

@@ -57,6 +57,10 @@ export type SteamDataAction =
     type: "CHANGE_GAME_STATUS";
     payload: { appId: number; status: GameType["status"] };
   }
+  | {
+    type: "SET_PRIORITY";
+    payload: { appId: number; priority: GameType["priority"] };
+  }
   | { type: "CLEAR_DATA" };
 
 const emptyUser: UserType = {
@@ -273,12 +277,29 @@ export function steamDataReducer(
           if (g.searchIndex) return {
             ...g,
             status,
+            priority: 1,
             searchIndex: appendToSearchIndex(g.searchIndex, status)
           };
           return {
             ...g,
+            priority: 1,
             status,
           }
+        }),
+      };
+    }
+
+    case "SET_PRIORITY": {
+      const { appId, priority } = action.payload;
+
+      return {
+        ...state,
+        games: state.games.map((g) => {
+          if (g.appId !== appId) return g;
+          return {
+            ...g,
+            priority,
+          };
         }),
       };
     }

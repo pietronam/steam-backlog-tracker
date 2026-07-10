@@ -34,6 +34,7 @@ export type SteamDataActions = {
         appId: number,
         status: GameType["status"],
     ) => void;
+    setPriority: (appId: number, priority: GameType["priority"]) => void;
     updateGameMetadata: (appId: number, metadata: GameMetadataType) => void;
     clearData: () => void;
 };

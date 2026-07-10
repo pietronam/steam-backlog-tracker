@@ -5,4 +5,5 @@ export type GameType = {
     status: "completed" | "backlog" | "untracked",
     custom_tags: string[],
     searchIndex?: string,
+    priority?: 1 | 2 | 3 | 4 | 5,
 }

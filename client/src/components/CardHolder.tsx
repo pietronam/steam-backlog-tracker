@@ -60,8 +60,13 @@ export const CardHolder = ({ games }: CardHolderProps) => {
     }
 
     const filteredGames = useMemo(() => {
-        return filterGames(games, searchQuery, activeFilters, genreMap, categoryMap)
-    }, [games, searchQuery, activeFilters])
+        return [...filterGames(games, searchQuery, activeFilters, genreMap, categoryMap)]
+            .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))
+    }, [games, searchQuery, activeFilters, genreMap, categoryMap])
+
+    // const filteredGames = useMemo(() => {
+    //     return filterGames(games, searchQuery, activeFilters, genreMap, categoryMap)
+    // }, [games, searchQuery, activeFilters])
 
     const totalPages = Math.max(
         1,

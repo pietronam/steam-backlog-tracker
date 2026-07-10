@@ -230,6 +230,19 @@ export function SteamDataProvider({
     [],
   );
 
+  const setPriority = useCallback(
+    (
+      appId: number,
+      priority: GameType["priority"],
+    ) => {
+      dispatch({
+        type: "SET_PRIORITY",
+        payload: { appId, priority },
+      });
+    },
+    [],
+  );
+
   const clearData = useCallback(() => {
     dispatch({
       type: "CLEAR_DATA",
@@ -251,6 +264,7 @@ export function SteamDataProvider({
       addCustomNotes,
       updateGameMetadata,
       changeGameStatus,
+      setPriority,
       clearData,
     }),
     [
@@ -263,6 +277,7 @@ export function SteamDataProvider({
       removeCustomTag,
       addCustomNotes,
       changeGameStatus,
+      setPriority,
       clearData,
     ],
   );

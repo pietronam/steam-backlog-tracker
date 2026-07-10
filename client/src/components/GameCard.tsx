@@ -7,13 +7,13 @@ import {
     Text
 } from "@chakra-ui/react"
 import { memo } from "react"
-import { FaClipboardList } from "react-icons/fa"
+import { FaClipboardList, FaRegStar, FaStar } from "react-icons/fa"
+import { ImCross } from "react-icons/im"
 import { IoIosCheckbox } from "react-icons/io"
-import { IoLibrary } from "react-icons/io5"
+import placeholderImage from "../assets/steam_placeholder_image.jpg"
 import { useSteamDataActions } from "../context/SteamDataContext"
 import type { GameType } from "../types/gameType"
 import { steamButtons } from "./theming/steamButtons"
-import placeholderImage from "../assets/steam_placeholder_image.jpg";
 
 const getCoverImageUrl = (appId: number) =>
     `https://shared.steamstatic.com/store_item_assets/steam/apps/${appId}/library_600x900.jpg`
@@ -26,11 +26,51 @@ export type GameCardProps = {
 const GameCardComponent = ({ game, onOpen }: GameCardProps) => {
     const coverImageUrl = getCoverImageUrl(game.appId)
 
-    const { changeGameStatus } = useSteamDataActions();
+    const { changeGameStatus, setPriority } = useSteamDataActions();
     const handleStatusChange = (status: GameType["status"]) => {
         changeGameStatus(game.appId, status);
     };
 
+    const leftButton = (() => {
+        if (game.status !== "backlog") {
+            return {
+                label: "Add to backlog",
+                action: () => handleStatusChange("backlog"),
+                icon: <FaClipboardList />,
+            };
+        }
+
+        if (game.priority === 5) {
+            return {
+                label: "Remove high priority",
+                action: () => setPriority(game.appId, 1),
+                icon: <FaRegStar color="gray" />,
+            };
+        }
+
+        return {
+            label: "High priority",
+            action: () => setPriority(game.appId, 5),
+            icon: <FaStar color="yellow" />,
+        };
+    })();
+
+    const rightButton = (() => {
+        if (game.status === "completed") {
+            return {
+                label: "Stop tracking",
+                action: () => handleStatusChange("untracked"),
+                icon: <ImCross />,
+            };
+        } else {
+            return {
+                label: "Mark completed",
+                action: () => handleStatusChange("completed"),
+                icon: <IoIosCheckbox color="lightGreen" />,
+            };
+
+        }
+    })();
     return (
         <Box
             as="article"
@@ -66,6 +106,19 @@ const GameCardComponent = ({ game, onOpen }: GameCardProps) => {
                 }
             }}
         >
+            {game.priority === 5 && (
+                <Box
+                    position="absolute"
+                    top={2}
+                    right={2}
+                    zIndex={2}
+                    bg="blackAlpha.600"
+                    borderRadius="full"
+                    p={1}
+                >
+                    <FaStar color="yellow" size={16} />
+                </Box>
+            )}
             <Image
                 src={coverImageUrl}
                 alt={`${game.name} cover`}
@@ -111,26 +164,32 @@ const GameCardComponent = ({ game, onOpen }: GameCardProps) => {
                 </Text>
 
                 <HStack>
-                    <Button css={steamButtons.secondaryButton} size="md" flex={1} onClick={(e) => {
-                        e.stopPropagation()
-                        if (game.status === "backlog") {
-                            handleStatusChange("untracked")
-                        } else {
-                            handleStatusChange("backlog")
-                        }
-                    }}>
-                        <Icon>{game.status === "backlog" ? <IoLibrary /> : <FaClipboardList />}</Icon>
+                    <Button
+                        css={steamButtons.secondaryButton}
+                        size="md"
+                        flex={1}
+                        aria-label={leftButton.label}
+                        title={leftButton.label}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            leftButton.action()
+                        }}
+                    >
+                        <Icon>{leftButton.icon}</Icon>
                     </Button>
 
-                    <Button css={steamButtons.secondaryButton} size="md" flex={1} onClick={(e) => {
-                        e.stopPropagation()
-                        if (game.status === "completed") {
-                            handleStatusChange("untracked")
-                        } else {
-                            handleStatusChange("completed")
-                        }
-                    }}>
-                        <Icon>{game.status === "completed" ? <IoLibrary /> : <IoIosCheckbox />}</Icon>
+                    <Button
+                        css={steamButtons.secondaryButton}
+                        size="md"
+                        flex={1}
+                        aria-label={rightButton.label}
+                        title={rightButton.label}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            rightButton.action()
+                        }}
+                    >
+                        <Icon>{rightButton.icon}</Icon>
                     </Button>
                 </HStack>
             </Box>
