@@ -1,85 +1,56 @@
 import {
-    Box,
-    Button,
     HStack,
     Progress,
     Text
 } from "@chakra-ui/react";
 
 import { useMetadataIndexer } from "../hooks/useMetadataIndexer";
-import { steamButtons } from "./theming/steamButtons";
 import { steamLayout } from "./theming/steamLayout";
 
 export const MetadataIndexer = () => {
-    const { progress, start, cancel } = useMetadataIndexer();
+    const { progress } = useMetadataIndexer();
 
     if (!progress.running && !progress.finished) {
-        return (
-            <Box>
-                <Button
-                    css={steamButtons.secondaryButton}
-                    size="sm"
-                    colorPalette="blue"
-                    onClick={start}
-                >
-                    Index metadata
-                </Button>
-            </Box>
-        );
+        return null;
     }
-
     return (
-            <HStack css={steamLayout.panel} align="stretch" gap={2} p={2} justifyContent={"center"}>
-                <Text fontWeight="bold" fontSize="sm">
-                    Indexing metadata
-                </Text>
+        <HStack
+            css={steamLayout.panel}
+            align="center"
+            gap={3}
+            p={2}
+            justifyItems={"center"}
+        >
+            <Text fontSize="sm">
+                Fetching game data...
+            </Text>
 
-                <Progress.Root
-                    value={progress.percentage}
-                    size="sm"
+            <Progress.Root
+                value={progress.percentage}
+                size="sm"
+                width="220px"
+                colorPalette="cyan"
+                bgColor="black"
+                position="relative"
+                variant="subtle"
+            >
+                <Progress.Track
+                    height="5px"
+                    borderRadius={10}
+                    bgColor="gray"
                 >
-                    <Progress.Track>
-                        <Progress.Range />
-                    </Progress.Track>
-                </Progress.Root>
+                    <Progress.Range />
+                </Progress.Track>
+            </Progress.Root>
 
-                <Text fontSize="xs">
-                    {progress.completed} / {progress.total} games
+            {progress.failed > 0 && (
+                <Text fontSize="xs" color="red.400" minWidth="60px">
+                    {progress.failed} failed
                 </Text>
-
-                <Text fontSize="xs">
-                    Failed: {progress.failed}
-                </Text>
-
-                <Text
-                    fontSize="xs"
-                    truncate
-                >
-                    {progress.currentGame}
-                </Text>
-
-                {progress.running ? (
-                    <Button
-                        css={steamButtons.dangerButton}
-                        size="2xs"
-                        onClick={cancel}
-                    >
-                        Cancel
-                    </Button>
-                ) : (
-                    <Text
-                        fontSize="xs"
-                        color={
-                            progress.cancelled
-                                ? "orange.400"
-                                : "green.400"
-                        }
-                    >
-                        {progress.cancelled
-                            ? "Cancelled"
-                            : "Finished"}
-                    </Text>
-                )}
-            </HStack>
+            )}
+            <Text>
+                {progress.completed} / {progress.total}
+            </Text>
+        </HStack>
     );
 }

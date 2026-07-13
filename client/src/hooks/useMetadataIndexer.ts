@@ -1,4 +1,4 @@
-import { useCallback, useReducer, useRef } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 
 import { getGameDetails } from "../api/getGameDetails";
 import { useSteamDataActions, useSteamDataState } from "../context/SteamDataContext";
@@ -115,17 +115,27 @@ export function useMetadataIndexer() {
     );
 
     const cancelRef = useRef(false);
+    const startedRef = useRef(false);
 
-    const cancel = useCallback(() => {
-        cancelRef.current = true;
-    }, []);
+    const gamesToIndex = useMemo(
+        () => state.games.filter(game => !game.searchIndex),
+        [state.games]
+    );
 
     const start = useCallback(async () => {
+        if (startedRef.current) return;
+
+        startedRef.current = true;
         cancelRef.current = false;
 
         const gamesToIndex = state.games.filter(
             (game) => !game.searchIndex,
         );
+
+        if (gamesToIndex.length === 0) {
+            startedRef.current = false;
+            return;
+        }
 
         progressDispatch({
             type: "START",
@@ -134,6 +144,8 @@ export function useMetadataIndexer() {
 
         for (const game of gamesToIndex) {
             if (cancelRef.current) {
+                startedRef.current = false;
+
                 progressDispatch({
                     type: "CANCEL",
                 });
@@ -147,24 +159,25 @@ export function useMetadataIndexer() {
             });
 
             try {
-                const gameDetails = await getGameDetails(
-                    game.appId,
-                );
+                const gameDetails = await getGameDetails(game.appId);
 
-                updateGameMetadata(
-                    game.appId,
-                    {
-                        name: game.name,
-                        status: game.status,
-                        customNotes: game.custom_notes,
-                        customTags: game.custom_tags,
-                        genres: gameDetails.genres,
-                        categories: gameDetails.categories,
-                        developers: gameDetails.developers,
-                        publishers: gameDetails.publishers,
-                    },
+                updateGameMetadata(game.appId, {
+                    name: game.name,
+                    status: game.status,
+                    customNotes: game.custom_notes,
+                    customTags: game.custom_tags,
+                    genres: gameDetails.genres,
+                    categories: gameDetails.categories,
+                    developers: gameDetails.developers,
+                    publishers: gameDetails.publishers,
+                });
+
+                addLookups(
+                    gameDetails.developers,
+                    gameDetails.publishers,
+                    gameDetails.genres,
+                    gameDetails.categories,
                 );
-                addLookups(gameDetails.developers, gameDetails.publishers, gameDetails.genres, gameDetails.categories)
 
                 progressDispatch({
                     type: "SUCCESS",
@@ -180,14 +193,23 @@ export function useMetadataIndexer() {
             await sleep(REQUEST_DELAY);
         }
 
+        startedRef.current = false;
+
         progressDispatch({
             type: "FINISH",
         });
-    }, [state.games, updateGameMetadata]);
+    }, [
+        state.games,
+        updateGameMetadata,
+    ]);
+
+    useEffect(() => {
+        if (gamesToIndex.length > 0) {
+            start();
+        }
+    }, [gamesToIndex.length, start]);
 
     return {
         progress,
-        start,
-        cancel,
     };
 }
