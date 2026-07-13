@@ -76,8 +76,8 @@ export const GameSelector = () => {
             {visibleGames.length > 0 ? (
                 <CardHolder games={visibleGames} />
             ) : (
-                <Text px={4} py={6} color="gray.500">
-                    No games in this view yet.
+                <Text px={4} py={6} color="gray.300" fontWeight={"bold"}>
+                    No games in this view yet. Add them from your library!
                 </Text>
             )}
         </Flex>

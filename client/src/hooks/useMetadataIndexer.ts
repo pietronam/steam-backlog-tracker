@@ -97,9 +97,9 @@ const indexReducer = (
                 ...progressState,
                 running: false,
                 cancelled: true,
+                finished: true,
                 currentGame: "",
             };
-
         default:
             return progressState;
     }
@@ -116,6 +116,10 @@ export function useMetadataIndexer() {
 
     const cancelRef = useRef(false);
     const startedRef = useRef(false);
+
+    const cancel = useCallback(() => {
+        cancelRef.current = true;
+    }, []);
 
     const gamesToIndex = useMemo(
         () => state.games.filter(game => !game.searchIndex),
@@ -211,5 +215,6 @@ export function useMetadataIndexer() {
 
     return {
         progress,
+        cancel
     };
 }

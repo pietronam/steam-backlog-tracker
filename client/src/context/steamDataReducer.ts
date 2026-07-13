@@ -10,7 +10,6 @@ import { removeFromSearchIndex } from "../utils/removeFromSearchIndex";
 export type SteamDataAction =
   | { type: "SET_STEAM_USER"; payload: UserType }
   | { type: "LOGIN"; payload: { user: UserType, games: GameType[] } }
-
   | {
     type: "SET_SESSION";
     payload: {
@@ -22,7 +21,6 @@ export type SteamDataAction =
       publishers: string[],
     };
   }
-
   | { type: "ADD_GAMES"; payload: GameType[] }
   | { type: "REMOVE_GAMES"; payload: number[] }
   | {
