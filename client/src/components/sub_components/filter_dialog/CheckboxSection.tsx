@@ -6,7 +6,7 @@ import {
     SimpleGrid,
 } from "@chakra-ui/react";
 import { memo, useMemo } from "react";
-import type { GameFilterState } from "../../../functions/filterGames";
+import type { GameFilterState } from "../../../utils/filterGames";
 import { steamColors } from "../../theming/steamColors";
 
 type CheckboxSectionProps = {

@@ -12,14 +12,14 @@ import {
     useMemo,
     useState,
 } from "react"
-import { FaFilter } from "react-icons/fa"
+import { FaDice, FaFilter } from "react-icons/fa"
 
 import { useSteamDataState } from "../context/SteamDataContext"
 import type { GameType } from "../types/gameType"
-import { filterGames, type GameFilterState } from "../functions/filterGames"
+import { filterGames, type GameFilterState } from "../utils/filterGames"
+import { FilterDialog } from "./FilterDialog"
 import { GameCard } from "./GameCard"
 import { GameDetailDialog } from "./GameDetailDialog"
-import { FilterDialog } from "./FilterDialog"
 import { PaginationBar } from "./PaginationBar"
 import { steamColors } from "./theming/steamColors"
 
@@ -64,9 +64,15 @@ export const CardHolder = ({ games }: CardHolderProps) => {
             .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))
     }, [games, searchQuery, activeFilters, genreMap, categoryMap])
 
-    // const filteredGames = useMemo(() => {
-    //     return filterGames(games, searchQuery, activeFilters, genreMap, categoryMap)
-    // }, [games, searchQuery, activeFilters])
+    const handleRandomGame = useCallback(() => {
+        if (filteredGames.length === 0) {
+            return
+        }
+
+        const randomIndex = Math.floor(Math.random() * filteredGames.length)
+        handleOpenGame(filteredGames[randomIndex])
+    }, [filteredGames, handleOpenGame])
+
 
     const totalPages = Math.max(
         1,
@@ -95,29 +101,43 @@ export const CardHolder = ({ games }: CardHolderProps) => {
                 gap={4}
                 flexWrap="wrap"
             >
-                <Box display="flex" flex="1" minW="280px" maxW="520px" gap={2}>
-                    <Input
-                        placeholder="Search games by name"
-                        value={searchQuery}
-                        onChange={(event) =>
-                            setSearchQuery(event.target.value)
-                        }
-                        bg={steamColors.background}
-                        borderColor="gray.500"
-                        _placeholder={{ color: "gray.500" }}
-                        minH="40px"
-                    />
+                <Box display="flex" flex="1" gap={2}>
+                    <Box display="flex" flex="1" minW="280px" maxW="520px" gap={2}>
+                        <Input
+                            placeholder="Search games by name"
+                            value={searchQuery}
+                            onChange={(event) =>
+                                setSearchQuery(event.target.value)
+                            }
+                            bg={steamColors.background}
+                            borderColor="gray.500"
+                            _placeholder={{ color: "gray.500" }}
+                            minH="40px"
+                        />
+                        <Button
+                            onClick={() => setIsFilterOpen(true)}
+                            minW="44px"
+                            bg={steamColors.surface}
+                            color={steamColors.textPrimary}
+                            _hover={{ bg: steamColors.elevated }}
+                        >
+                            <FaFilter />
+                        </Button>
+                    </Box>
                     <Button
-                        onClick={() => setIsFilterOpen(true)}
+                        onClick={handleRandomGame}
                         minW="44px"
                         bg={steamColors.surface}
                         color={steamColors.textPrimary}
                         _hover={{ bg: steamColors.elevated }}
+                        disabled={filteredGames.length === 0}
                     >
-                        <FaFilter />
+                        <FaDice />
+                        <Text fontWeight="bold">Pick random</Text>
+                        <Text>(with filters)</Text>
                     </Button>
-                </Box>
 
+                </Box>
                 <PaginationBar
                     count={filteredGames.length}
                     page={currentPage}

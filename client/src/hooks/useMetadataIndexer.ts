@@ -4,7 +4,7 @@ import { getGameDetails } from "../api/getGameDetails";
 import { useSteamDataActions, useSteamDataState } from "../context/SteamDataContext";
 import type { IndexingProgress } from "../types/indexingTypes";
 
-const REQUEST_DELAY = 150;
+const REQUEST_DELAY = 200;
 
 const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
