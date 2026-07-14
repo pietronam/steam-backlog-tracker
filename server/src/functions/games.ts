@@ -12,7 +12,7 @@ export async function games(
     context: InvocationContext
 ): Promise<HttpResponseInit> {
 
-    const steamId = request.params.steamId;
+    const steamId = request.params.steamid ?? request.params.steamId;
 
     try {
 
@@ -48,6 +48,6 @@ export async function games(
 app.http("games", {
     methods: ["GET"],
     authLevel: "anonymous",
-    route: "games/{steamId}",
+    route: "games/{steamid}",
     handler: games,
 });

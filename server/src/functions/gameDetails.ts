@@ -12,7 +12,7 @@ export async function gameDetails(
     context: InvocationContext
 ): Promise<HttpResponseInit> {
 
-    const appId = request.params.appId;
+    const appId = request.params.appid ?? request.params.appId;
 
     context.log(`Fetching metadata for ${appId}`);
 
@@ -50,6 +50,6 @@ export async function gameDetails(
 app.http("gameDetails", {
     methods: ["GET"],
     authLevel: "anonymous",
-    route: "games/detail/{appId}",
+    route: "games/detail/{appid}",
     handler: gameDetails,
 });

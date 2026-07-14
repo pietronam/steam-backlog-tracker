@@ -12,7 +12,7 @@ export async function player(
     context: InvocationContext
 ): Promise<HttpResponseInit> {
 
-    const steamId = request.params.steamId;
+    const steamId = request.params.steamid ?? request.params.steamId;
 
     try {
         const data = await steamFetch(
@@ -46,6 +46,6 @@ export async function player(
     app.http("player", {
         methods: ["GET"],
         authLevel: "anonymous",
-        route: "player/{steamId}",
+        route: "player/{steamid}",
         handler: player,
     });
