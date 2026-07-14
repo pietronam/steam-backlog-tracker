@@ -28,6 +28,10 @@ export const MetadataIndexer = ({ progress }: MetadataIndexerProps) => {
                 <Text color="orange.300" fontSize="sm">
                     Metadata indexing cancelled.
                 </Text>
+            ) : progress.finished ? (
+                <Text color="green.400" fontSize="sm">
+                    Game fetching finished
+                </Text>
             ) : (
                 <>
                     <Text fontSize="sm">
@@ -61,7 +65,6 @@ export const MetadataIndexer = ({ progress }: MetadataIndexerProps) => {
                             {progress.failed} failed
                         </Text>
                     )}
-
                     <Text>
                         {progress.completed} / {progress.total}
                     </Text>

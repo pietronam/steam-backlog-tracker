@@ -18,4 +18,7 @@ export const steamColors = {
     greenHover: "#6cb83c",
 
     danger: "#b33a3a",
+
+    online: "#57cbde",
+    offline: "#898989"
 }
