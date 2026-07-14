@@ -29,9 +29,17 @@ export const MetadataIndexer = ({ progress }: MetadataIndexerProps) => {
                     Metadata indexing cancelled.
                 </Text>
             ) : progress.finished ? (
-                <Text color="green.400" fontSize="sm">
-                    Game fetching finished
-                </Text>
+                <>
+                    <Text fontSize="sm">
+                        Fetching finished. Errors:
+                    </Text>
+                    <Text
+                        color = {progress.failed > 0 ? "red.400" : ""}
+                        fontSize="sm">
+                        {progress.failed}
+                    </Text>
+
+                </>
             ) : (
                 <>
                     <Text fontSize="sm">

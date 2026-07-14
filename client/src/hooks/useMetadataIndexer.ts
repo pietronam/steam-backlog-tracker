@@ -165,6 +165,15 @@ export function useMetadataIndexer() {
             try {
                 const gameDetails = await getGameDetails(game.appId);
 
+                if (
+                    !gameDetails ||
+                    !Array.isArray(gameDetails.genres) ||
+                    !Array.isArray(gameDetails.categories)
+                ) {
+                    throw new Error(
+                        `Invalid game data for ${game.name} (${game.appId})`
+                    );
+                }
                 updateGameMetadata(game.appId, {
                     name: game.name,
                     status: game.status,

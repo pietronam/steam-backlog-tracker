@@ -15,12 +15,12 @@ export type useGameDetailsOptions = Omit<
 export function useGameDetails(appId: number, options?: useGameDetailsOptions) {
     const queryKey = ["gameDetails", appId] as const
 
-    const query = useQuery({
-        queryKey,
-        queryFn: () => getGameDetails(appId),
-        enabled: Boolean(appId && (options?.enabled ?? true)),
-        ...options,
-    })
+        const query = useQuery({
+            queryKey,
+            queryFn: () => getGameDetails(appId),
+            enabled: Boolean(appId && (options?.enabled ?? true)),
+            ...options,
+        })
 
     return query
 }

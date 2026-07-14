@@ -25,7 +25,8 @@ app.get("/api/player/:steamId", async (req, res) => {
         const data = await response.json()
 
         res.json(data)
-    } catch {
+    } catch (error) {
+        console.error(error)
         res.status(500).json({
             error: "Failed to fetch user data.",
         })
@@ -47,7 +48,9 @@ app.get("/api/games/:steamId", async (req, res) => {
         const data = await response.json()
 
         res.json(data)
-    } catch {
+    } catch (error) {
+        console.error(error)
+
         res.status(500).json({
             error: "Failed to fetch user games.",
         })
@@ -56,6 +59,7 @@ app.get("/api/games/:steamId", async (req, res) => {
 
 app.get("/api/games/detail/:appId", async (req, res) => {
     const { appId } = req.params
+    console.log(`Fetching metadata for ${appId}`);
 
     try {
         const response = await fetch(
@@ -63,15 +67,23 @@ app.get("/api/games/detail/:appId", async (req, res) => {
         )
 
         if (!response.ok) {
-            return res.sendStatus(response.status)
+            const body = await response.text();
+
+            console.error(
+                `Steam returned ${response.status} for ${appId}`
+            );
+            console.error(body);
+
+            return res.status(response.status).send(body);
         }
 
         const data = await response.json()
 
         res.json(data)
-    } catch {
+    } catch (error) {
+        console.error(error)
         res.status(500).json({
-            error: "Failed to fetch user games.",
+            error: "Failed to game details.",
         })
     }
 })
