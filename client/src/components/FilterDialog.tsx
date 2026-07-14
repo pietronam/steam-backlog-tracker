@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import type { GameType } from "../types/gameType";
-import type { GameFilterState } from "../utils/filterGames";
+import type { GameFilterState } from "../functions/filterGames";
 import { CheckboxSection } from "./sub_components/filter_dialog/CheckboxSection";
 import { steamColors } from "./theming/steamColors";
 import { steamLayout } from "./theming/steamLayout";

@@ -9,7 +9,7 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { memo, useMemo, useState } from "react";
-import type { GameFilterState } from "../../../utils/filterGames";
+import type { GameFilterState } from "../../../functions/filterGames";
 import { steamColors } from "../../theming/steamColors";
 import { steamMisc } from "../../theming/steamMisc";
 import { steamText } from "../../theming/steamText";
